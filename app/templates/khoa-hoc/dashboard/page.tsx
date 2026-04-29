@@ -210,12 +210,10 @@ export default function DashboardPage() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg ring-2 ring-blue-100">
                 A
               </div>
-              <div>
-                <p className="font-heading font-bold text-slate-900 text-sm">Nguyễn Văn A</p>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">Level 2</span>
-                  <span className="text-xs text-slate-400">· Người học tích cực</span>
-                </div>
+              <div className="min-w-0">
+                <p className="font-heading font-bold text-slate-900 text-sm truncate">Nguyễn Văn A</p>
+                <span className="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">Level 2</span>
+                <p className="text-xs text-slate-400 mt-0.5">Người học tích cực</p>
               </div>
             </div>
             {/* XP progress */}
@@ -274,7 +272,7 @@ export default function DashboardPage() {
 
         {/* Main content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+          <div className="px-5 sm:px-8 py-8">
             {renderContent()}
           </div>
         </main>
