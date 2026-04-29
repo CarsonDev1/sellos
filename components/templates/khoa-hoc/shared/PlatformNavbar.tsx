@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import AuthModal from "./AuthModal";
 
@@ -9,18 +9,11 @@ interface PlatformNavbarProps {
 }
 
 export default function PlatformNavbar({ isLoggedIn = false }: PlatformNavbarProps) {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: "login" | "register" }>({
     open: false,
     mode: "login",
   });
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const openAuth = (mode: "login" | "register") => {
     setAuthModal({ open: true, mode });
@@ -29,11 +22,7 @@ export default function PlatformNavbar({ isLoggedIn = false }: PlatformNavbarPro
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-          scrolled ? "bg-white shadow-sm border-b border-slate-200" : "bg-white/98 backdrop-blur-sm"
-        }`}
-      >
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div className="container mx-auto max-w-7xl px-4 h-16 flex items-center gap-3">
           {/* Logo */}
           <Link href="/templates/khoa-hoc" className="flex items-center gap-2 flex-shrink-0">
