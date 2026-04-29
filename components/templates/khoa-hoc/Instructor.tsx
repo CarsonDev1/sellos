@@ -44,8 +44,8 @@ export default function Instructor() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {/* Avatar & name */}
             <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-10 flex flex-col items-center justify-center text-center text-white space-y-4">
-              <div className="w-28 h-28 rounded-full bg-white/20 border-4 border-white/30 flex items-center justify-center text-5xl">
-                👨‍💻
+              <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white/40 shadow-xl">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Nguyễn Thành Nam" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="font-heading font-bold text-2xl">

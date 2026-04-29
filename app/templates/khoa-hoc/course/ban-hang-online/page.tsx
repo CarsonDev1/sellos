@@ -31,9 +31,9 @@ const INCLUDES = [
 ];
 
 const REVIEWS = [
-  { name: "Minh Tuấn", avatar: "MT", gradient: "from-amber-400 to-orange-500", stars: 5, date: "15/03/2025", title: "Khóa học tốt nhất tôi từng học!", text: "Ra đơn đầu tiên sau 5 ngày học. Không ngờ đơn giản vậy! Khóa học rất thực tế, mỗi bài đều có bài tập làm ngay. Mentor support cực kỳ nhiệt tình, phản hồi rất nhanh." },
-  { name: "Linh Phương", avatar: "LP", gradient: "from-rose-400 to-pink-500", stars: 5, date: "22/02/2025", title: "Dành cho người không biết code", text: "Là mẹ bỉm sữa không biết gì về công nghệ mà còn làm được, thì ai cũng làm được. Giờ mỗi tháng bán 50-70 đơn mà không cần ngồi máy tính cả ngày." },
-  { name: "Đức Anh", avatar: "DA", gradient: "from-violet-400 to-purple-500", stars: 5, date: "10/01/2025", title: "ROI tốt nhất trong các khóa học đã học", text: "Payback period chỉ 4 ngày. Email automation giúp tôi convert thêm 30% học viên mà gần như không tốn công sức. Rất đáng đồng tiền bỏ ra." },
+  { name: "Minh Tuấn", photo: "https://randomuser.me/api/portraits/men/52.jpg", stars: 5, date: "15/03/2025", title: "Khóa học tốt nhất tôi từng học!", text: "Ra đơn đầu tiên sau 5 ngày học. Không ngờ đơn giản vậy! Khóa học rất thực tế, mỗi bài đều có bài tập làm ngay. Mentor support cực kỳ nhiệt tình, phản hồi rất nhanh." },
+  { name: "Linh Phương", photo: "https://randomuser.me/api/portraits/women/55.jpg", stars: 5, date: "22/02/2025", title: "Dành cho người không biết code", text: "Là mẹ bỉm sữa không biết gì về công nghệ mà còn làm được, thì ai cũng làm được. Giờ mỗi tháng bán 50-70 đơn mà không cần ngồi máy tính cả ngày." },
+  { name: "Đức Anh", photo: "https://randomuser.me/api/portraits/men/76.jpg", stars: 5, date: "10/01/2025", title: "ROI tốt nhất trong các khóa học đã học", text: "Payback period chỉ 4 ngày. Email automation giúp tôi convert thêm 30% học viên mà gần như không tốn công sức. Rất đáng đồng tiền bỏ ra." },
 ];
 
 function StarRow({ count }: { count: number }) {
@@ -199,9 +199,7 @@ export default function CourseDetailPage() {
                 {REVIEWS.map((r, i) => (
                   <div key={i} className="border border-slate-200 rounded-2xl p-5 hover:border-blue-200 transition-colors">
                     <div className="flex items-start gap-4">
-                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${r.gradient} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
-                        {r.avatar}
-                      </div>
+                      <img src={r.photo} alt={r.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
                       <div className="flex-1">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div>
@@ -235,11 +233,13 @@ export default function CourseDetailPage() {
               <h2 className="font-heading text-xl font-bold text-slate-900 mb-4">Học Viên Cũng Mua</h2>
               <div className="space-y-3">
                 {[
-                  { emoji: "📱", title: "Facebook & TikTok Ads Từ A Đến Z", instructor: "Trần Hải Đăng", price: "990.000", rating: 4.8, gradient: "from-rose-500 to-pink-600" },
-                  { emoji: "📧", title: "Email Marketing Tự Động", instructor: "Lê Thu Hương", price: "790.000", rating: 4.7, gradient: "from-violet-500 to-purple-600" },
+                  { image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=200&q=80", title: "Facebook & TikTok Ads Từ A Đến Z", instructor: "Trần Hải Đăng", price: "990.000", rating: 4.8 },
+                  { image: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=200&q=80", title: "Email Marketing Tự Động", instructor: "Lê Thu Hương", price: "790.000", rating: 4.7 },
                 ].map((c, i) => (
                   <Link key={i} href="/templates/khoa-hoc/course/ban-hang-online" className="flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-200 hover:shadow-sm transition-all group">
-                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-2xl flex-shrink-0`}>{c.emoji}</div>
+                    <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-slate-200">
+                      <img src={c.image} alt={c.title} className="w-full h-full object-cover" />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-heading font-semibold text-slate-900 text-sm truncate group-hover:text-blue-600 transition-colors">{c.title}</p>
                       <p className="text-slate-400 text-xs mt-0.5">{c.instructor}</p>
@@ -260,13 +260,9 @@ export default function CourseDetailPage() {
             <div className="sticky top-20">
               <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/60 bg-white">
                 {/* Thumbnail */}
-                <div className="h-48 bg-gradient-to-br from-blue-500 to-indigo-600 relative flex items-center justify-center overflow-hidden group cursor-pointer">
-                  <div className="absolute inset-0" style={{backgroundImage: "radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 1px, transparent 1px)", backgroundSize: "30px 30px"}} />
-                  <div className="text-center text-white space-y-1 relative z-10">
-                    <div className="text-4xl">📚</div>
-                    <p className="font-heading font-bold text-sm">Bán Hàng Online</p>
-                    <p className="text-blue-100 text-xs">Từ 0 → Đơn Đầu Tiên</p>
-                  </div>
+                <div className="h-48 relative overflow-hidden group cursor-pointer bg-slate-200">
+                  <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80" alt="Bán Hàng Online" className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/30" />
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-lg">
                       <span className="text-blue-600 text-2xl ml-1">▶</span>

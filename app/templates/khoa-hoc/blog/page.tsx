@@ -15,12 +15,10 @@ const POSTS = [
     excerpt: "Thị trường thay đổi nhanh chóng — những chiến lược nào đang thực sự tạo ra đơn hàng năm 2025? Chúng tôi phân tích dữ liệu từ 500+ học viên để tìm ra câu trả lời.",
     category: "Bán hàng",
     author: "Nguyễn Thành Nam",
-    authorAvatar: "NTN",
-    authorGradient: "from-blue-500 to-indigo-600",
+    authorPhoto: "https://randomuser.me/api/portraits/men/32.jpg",
     date: "28/04/2025",
     readTime: "8 phút",
-    gradient: "from-blue-500 to-indigo-600",
-    emoji: "🚀",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
     featured: true,
     tags: ["Bán hàng", "Chiến lược", "2025"],
   },
@@ -30,12 +28,10 @@ const POSTS = [
     excerpt: "Hook đầu tiên quyết định tất cả. Học cách viết 3 giây đầu tiên khiến người dùng dừng lại và nhấp vào quảng cáo của bạn.",
     category: "Quảng cáo",
     author: "Trần Hải Đăng",
-    authorAvatar: "THD",
-    authorGradient: "from-rose-500 to-pink-600",
+    authorPhoto: "https://randomuser.me/api/portraits/men/45.jpg",
     date: "25/04/2025",
     readTime: "6 phút",
-    gradient: "from-rose-500 to-pink-600",
-    emoji: "📱",
+    image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["Facebook Ads", "Copywriting"],
   },
@@ -45,12 +41,10 @@ const POSTS = [
     excerpt: "AI đang thay đổi cách chúng ta bán hàng. Khám phá cách thiết lập funnel tự động từ traffic → lead → đơn hàng mà không cần can thiệp thủ công.",
     category: "Công nghệ",
     author: "Nguyễn Thành Nam",
-    authorAvatar: "NTN",
-    authorGradient: "from-blue-500 to-indigo-600",
+    authorPhoto: "https://randomuser.me/api/portraits/men/32.jpg",
     date: "22/04/2025",
     readTime: "10 phút",
-    gradient: "from-violet-500 to-purple-600",
-    emoji: "🤖",
+    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["AI", "Automation", "Funnel"],
   },
@@ -60,12 +54,10 @@ const POSTS = [
     excerpt: "Minh Tuấn — giáo viên thể dục — đã bán được 100 đơn/tháng chỉ sau 6 tuần học. Đây là toàn bộ hành trình chi tiết của anh ấy.",
     category: "Bán hàng",
     author: "Nguyễn Thành Nam",
-    authorAvatar: "NTN",
-    authorGradient: "from-blue-500 to-indigo-600",
+    authorPhoto: "https://randomuser.me/api/portraits/men/32.jpg",
     date: "19/04/2025",
     readTime: "12 phút",
-    gradient: "from-amber-500 to-orange-500",
-    emoji: "🎯",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["Case study", "Bán hàng"],
   },
@@ -75,12 +67,10 @@ const POSTS = [
     excerpt: "Email vẫn là kênh ROI cao nhất — 42$ cho mỗi 1$ đầu tư. Nhưng cách làm đang thay đổi. Đây là những gì bạn cần biết để không bị bỏ lại.",
     category: "Marketing",
     author: "Lê Minh Châu",
-    authorAvatar: "LMC",
-    authorGradient: "from-emerald-500 to-teal-600",
+    authorPhoto: "https://randomuser.me/api/portraits/women/28.jpg",
     date: "16/04/2025",
     readTime: "7 phút",
-    gradient: "from-emerald-500 to-teal-600",
-    emoji: "📧",
+    image: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["Email Marketing", "2025"],
   },
@@ -90,12 +80,10 @@ const POSTS = [
     excerpt: "So sánh chi tiết phí, traffic, chuyển đổi và tiềm năng tăng trưởng của 2 sàn TMĐT lớn nhất Việt Nam để giúp bạn quyết định đúng.",
     category: "Bán hàng",
     author: "Phạm Quang Huy",
-    authorAvatar: "PQH",
-    authorGradient: "from-orange-500 to-red-500",
+    authorPhoto: "https://randomuser.me/api/portraits/men/67.jpg",
     date: "13/04/2025",
     readTime: "9 phút",
-    gradient: "from-orange-500 to-red-500",
-    emoji: "🛍️",
+    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["Shopee", "Lazada", "TMĐT"],
   },
@@ -105,12 +93,10 @@ const POSTS = [
     excerpt: "Tại sao landing page của bạn không bán được hàng? Phân tích 100 landing page thực tế để tìm ra những yếu tố tạo nên tỉ lệ chuyển đổi 15%+.",
     category: "Marketing",
     author: "Vũ Thị Lan",
-    authorAvatar: "VTL",
-    authorGradient: "from-violet-500 to-purple-600",
+    authorPhoto: "https://randomuser.me/api/portraits/women/44.jpg",
     date: "10/04/2025",
     readTime: "11 phút",
-    gradient: "from-cyan-500 to-blue-500",
-    emoji: "📊",
+    image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["Landing Page", "Conversion"],
   },
@@ -120,12 +106,10 @@ const POSTS = [
     excerpt: "5 triệu đủ để bắt đầu không? Câu trả lời là CÓ — nếu bạn biết chi đúng chỗ. Đây là roadmap chi tiết từ ý tưởng đến dòng tiền đầu tiên.",
     category: "Khởi nghiệp",
     author: "Hoàng Minh Đức",
-    authorAvatar: "HMD",
-    authorGradient: "from-amber-500 to-yellow-500",
+    authorPhoto: "https://randomuser.me/api/portraits/men/23.jpg",
     date: "07/04/2025",
     readTime: "14 phút",
-    gradient: "from-amber-400 to-yellow-500",
-    emoji: "💡",
+    image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
     featured: false,
     tags: ["Khởi nghiệp", "Budget"],
   },
@@ -169,8 +153,9 @@ export default function BlogPage() {
           <div className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Bài nổi bật</div>
           <Link href="#" className="group block bg-white border border-slate-200 rounded-3xl overflow-hidden hover:shadow-lg hover:border-blue-200 transition-all">
             <div className="flex flex-col lg:flex-row">
-              <div className={`lg:w-96 h-56 lg:h-auto flex-shrink-0 bg-gradient-to-br ${featured.gradient} flex items-center justify-center relative`}>
-                <span className="text-8xl">{featured.emoji}</span>
+              <div className="lg:w-96 h-56 lg:h-auto flex-shrink-0 relative overflow-hidden bg-slate-200">
+                <img src={featured.image} alt={featured.title} className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <div className="absolute top-4 left-4">
                   <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full">{featured.category}</span>
                 </div>
@@ -187,9 +172,7 @@ export default function BlogPage() {
                 <p className="text-slate-500 leading-relaxed">{featured.excerpt}</p>
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${featured.authorGradient} flex items-center justify-center text-white font-bold text-xs`}>
-                      {featured.authorAvatar}
-                    </div>
+                    <img src={featured.authorPhoto} alt={featured.author} className="w-8 h-8 rounded-full object-cover" />
                     <div>
                       <p className="text-sm font-semibold text-slate-900">{featured.author}</p>
                       <p className="text-xs text-slate-400">{featured.date} · {featured.readTime} đọc</p>
@@ -237,8 +220,9 @@ export default function BlogPage() {
                 className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-md hover:border-blue-200 transition-all flex flex-col"
               >
                 {/* Thumbnail */}
-                <div className={`h-44 bg-gradient-to-br ${post.gradient} flex items-center justify-center flex-shrink-0 relative`}>
-                  <span className="text-6xl">{post.emoji}</span>
+                <div className="h-44 flex-shrink-0 relative overflow-hidden bg-slate-200">
+                  <img src={post.image} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <div className="absolute top-3 left-3">
                     <span className="bg-white/20 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full">{post.category}</span>
                   </div>
@@ -253,9 +237,7 @@ export default function BlogPage() {
                   </h3>
                   <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 flex-1">{post.excerpt}</p>
                   <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                    <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${post.authorGradient} flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0`}>
-                      {post.authorAvatar}
-                    </div>
+                    <img src={post.authorPhoto} alt={post.author} className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-slate-700 truncate">{post.author}</p>
                       <p className="text-[11px] text-slate-400">{post.date}</p>

@@ -16,10 +16,9 @@ const ALL_COURSES = [
     discount: 40,
     lessons: 16,
     hours: "12.5",
-    gradient: "from-blue-500 to-indigo-600",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-amber-400 text-amber-900",
     tag: "Bestseller",
-    emoji: "🚀",
     category: "Bán hàng",
     level: "Tất cả trình độ",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -35,10 +34,9 @@ const ALL_COURSES = [
     discount: 47,
     lessons: 14,
     hours: "10",
-    gradient: "from-cyan-500 to-blue-600",
+    image: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-green-500 text-white",
     tag: "Mới",
-    emoji: "📦",
     category: "Bán hàng",
     level: "Người mới bắt đầu",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -54,10 +52,9 @@ const ALL_COURSES = [
     discount: 50,
     lessons: 20,
     hours: "15",
-    gradient: "from-rose-500 to-pink-600",
+    image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-red-500 text-white",
     tag: "Hot",
-    emoji: "📱",
     category: "Quảng cáo",
     level: "Trung cấp",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -73,10 +70,9 @@ const ALL_COURSES = [
     discount: 39,
     lessons: 18,
     hours: "12",
-    gradient: "from-pink-500 to-violet-600",
+    image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-violet-600 text-white",
     tag: "Phổ biến",
-    emoji: "🎬",
     category: "Quảng cáo",
     level: "Người mới bắt đầu",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -92,10 +88,9 @@ const ALL_COURSES = [
     discount: 47,
     lessons: 12,
     hours: "9",
-    gradient: "from-violet-500 to-purple-600",
+    image: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-purple-600 text-white",
     tag: "Phổ biến",
-    emoji: "📧",
     category: "Marketing",
     level: "Tất cả trình độ",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -111,10 +106,9 @@ const ALL_COURSES = [
     discount: 42,
     lessons: 10,
     hours: "7.5",
-    gradient: "from-amber-500 to-orange-600",
+    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-amber-400 text-amber-900",
     tag: "Mới nhất",
-    emoji: "⭐",
     category: "Marketing",
     level: "Người mới bắt đầu",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -130,10 +124,9 @@ const ALL_COURSES = [
     discount: 47,
     lessons: 18,
     hours: "13",
-    gradient: "from-orange-500 to-amber-600",
+    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-red-500 text-white",
     tag: "Hot",
-    emoji: "🛒",
     category: "Thương mại điện tử",
     level: "Trung cấp",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -149,10 +142,9 @@ const ALL_COURSES = [
     discount: 50,
     lessons: 15,
     hours: "11",
-    gradient: "from-teal-500 to-emerald-600",
+    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=800&q=80",
     accentColor: "bg-teal-600 text-white",
     tag: "Mới nhất",
-    emoji: "🤖",
     category: "Khởi nghiệp",
     level: "Người mới bắt đầu",
     link: "/templates/khoa-hoc/course/ban-hang-online",
@@ -199,11 +191,9 @@ function CourseCard({ course }: { course: typeof ALL_COURSES[0] }) {
     <Link href={course.link} className="group block h-full">
       <div className="h-full flex flex-col rounded-2xl border border-slate-200 bg-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/60 hover:border-blue-200 hover:-translate-y-1">
         {/* Thumbnail — fixed height */}
-        <div className={`h-44 bg-gradient-to-br ${course.gradient} relative flex items-center justify-center flex-shrink-0 overflow-hidden`}>
-          {/* Pattern overlay */}
-          <div className="absolute inset-0 opacity-10" style={{backgroundImage: "radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)", backgroundSize: "30px 30px"}} />
-
-          <span className="text-5xl relative z-10">{course.emoji}</span>
+        <div className="h-44 relative flex-shrink-0 overflow-hidden bg-slate-200">
+          <img src={course.image} alt={course.title} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
           {/* Tag */}
           <span className={`absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full ${course.accentColor}`}>
