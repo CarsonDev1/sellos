@@ -93,7 +93,7 @@ export default function Hero() {
 								variant='outline'
 								className='border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 text-base px-8 h-12'
 							>
-								<Link href='#templates'>▶ Xem Template Mẫu</Link>
+								<Link href='/templates/khoa-hoc'>▶ Xem Template Mẫu</Link>
 							</Button>
 						</div>
 

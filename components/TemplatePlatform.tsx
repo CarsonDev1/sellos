@@ -141,9 +141,18 @@ export default function TemplatePlatform() {
                   >
                     {t.tag}
                   </Badge>
-                  <button className="text-xs text-blue-600 font-semibold hover:underline">
-                    Xem Demo →
-                  </button>
+                  {i === 0 ? (
+                    <Link
+                      href="/templates/khoa-hoc"
+                      className="text-xs text-blue-600 font-semibold hover:underline"
+                    >
+                      Xem Demo →
+                    </Link>
+                  ) : (
+                    <button className="text-xs text-slate-400 font-semibold cursor-not-allowed">
+                      Sắp ra mắt
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
