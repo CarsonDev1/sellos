@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface AuthModalProps {
@@ -9,6 +10,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ defaultMode = "login", onClose }: AuthModalProps) {
+  const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">(defaultMode);
   const [showPassword, setShowPassword] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -123,7 +125,7 @@ export default function AuthModal({ defaultMode = "login", onClose }: AuthModalP
           </div>
 
           {/* Form */}
-          <form onSubmit={(e) => { e.preventDefault(); onClose(); }} className="space-y-4">
+          <form onSubmit={(e) => { e.preventDefault(); onClose(); router.push("/templates/khoa-hoc/dashboard"); }} className="space-y-4">
             {mode === "register" && (
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">

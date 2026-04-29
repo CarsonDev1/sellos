@@ -98,6 +98,15 @@ export default function PlatformNavbar({ isLoggedIn = false }: PlatformNavbarPro
               </>
             ) : (
               <>
+                <Link
+                  href="/templates/khoa-hoc/dashboard"
+                  className="hidden sm:flex items-center gap-1.5 text-sm text-blue-600 font-semibold px-3.5 py-2 rounded-xl border border-blue-200 hover:bg-blue-50 transition-all"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Demo Dashboard
+                </Link>
                 <button
                   onClick={() => openAuth("login")}
                   className="hidden sm:block text-sm text-slate-700 hover:text-slate-900 font-medium px-4 py-2.5 rounded-lg hover:bg-slate-100 transition-all"
@@ -155,19 +164,28 @@ export default function PlatformNavbar({ isLoggedIn = false }: PlatformNavbarPro
                 </Link>
               ))}
               {!isLoggedIn && (
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 mt-2">
-                  <button
-                    onClick={() => openAuth("login")}
-                    className="py-3 text-sm font-semibold text-slate-700 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+                <div className="pt-2 border-t border-slate-100 mt-2 space-y-2">
+                  <Link
+                    href="/templates/khoa-hoc/dashboard"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-center gap-2 py-3 text-sm font-semibold text-blue-600 border border-blue-200 rounded-xl hover:bg-blue-50 transition-colors"
                   >
-                    Đăng nhập
-                  </button>
-                  <button
-                    onClick={() => openAuth("register")}
-                    className="py-3 text-sm font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors"
-                  >
-                    Đăng ký
-                  </button>
+                    📊 Xem Demo Dashboard
+                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => openAuth("login")}
+                      className="py-3 text-sm font-semibold text-slate-700 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+                    >
+                      Đăng nhập
+                    </button>
+                    <button
+                      onClick={() => openAuth("register")}
+                      className="py-3 text-sm font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors"
+                    >
+                      Đăng ký
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

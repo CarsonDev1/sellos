@@ -25,6 +25,8 @@ const ENROLLED = [
     lastLesson: "Bài 1.3 — Định vị USP của bạn",
     link: "/templates/khoa-hoc/learn/ban-hang-online",
     timeLeft: "~10.5 giờ còn lại",
+    category: "Bán hàng",
+    enrolled: "20/04/2025",
   },
   {
     id: "facebook-ads",
@@ -38,7 +40,62 @@ const ENROLLED = [
     lastLesson: "Chưa bắt đầu",
     link: "/templates/khoa-hoc/learn/ban-hang-online",
     timeLeft: "~15 giờ",
+    category: "Quảng cáo",
+    enrolled: "24/04/2025",
   },
+];
+
+const WISHLIST = [
+  {
+    id: "email-marketing",
+    title: "Email Marketing Tự Động Hóa",
+    instructor: "Lê Minh Châu",
+    price: "990.000₫",
+    originalPrice: "1.890.000₫",
+    rating: 4.7,
+    students: 620,
+    gradient: "from-emerald-500 to-teal-600",
+    emoji: "📧",
+  },
+  {
+    id: "shopee-ads",
+    title: "Shopee & Lazada: Tối Ưu Shop",
+    instructor: "Phạm Quang Huy",
+    price: "890.000₫",
+    originalPrice: "1.590.000₫",
+    rating: 4.9,
+    students: 1050,
+    gradient: "from-orange-500 to-red-500",
+    emoji: "🛍️",
+  },
+  {
+    id: "content-marketing",
+    title: "Content Marketing & SEO Thực Chiến",
+    instructor: "Vũ Thị Lan",
+    price: "1.190.000₫",
+    originalPrice: "2.290.000₫",
+    rating: 4.8,
+    students: 740,
+    gradient: "from-violet-500 to-purple-600",
+    emoji: "✍️",
+  },
+];
+
+const WEEKLY_DATA = [
+  { day: "T2", minutes: 45 },
+  { day: "T3", minutes: 60 },
+  { day: "T4", minutes: 0 },
+  { day: "T5", minutes: 90 },
+  { day: "T6", minutes: 30 },
+  { day: "T7", minutes: 0 },
+  { day: "CN", minutes: 75 },
+];
+
+const MODULE_PROGRESS = [
+  { title: "Module 1: Tìm sản phẩm & định vị", done: 3, total: 4, pct: 75 },
+  { title: "Module 2: Xây landing page bằng AI", done: 0, total: 5, pct: 0 },
+  { title: "Module 3: Chatbot & Email tự động hóa", done: 0, total: 4, pct: 0 },
+  { title: "Module 4: Chạy traffic & tối ưu", done: 0, total: 3, pct: 0 },
 ];
 
 const STATS = [
@@ -65,6 +122,26 @@ const ACTIVITY = [
 export default function DashboardPage() {
   const [activeNav, setActiveNav] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [courseTab, setCourseTab] = useState<"learning" | "completed" | "wishlist">("learning");
+  const [profileEditing, setProfileEditing] = useState(false);
+  const [notifSettings, setNotifSettings] = useState({
+    emailReminder: true,
+    courseUpdates: true,
+    weeklyReport: true,
+    promotions: false,
+  });
+
+  const maxMinutes = Math.max(...WEEKLY_DATA.map((d) => d.minutes), 1);
+
+  function renderContent() {
+    switch (activeNav) {
+      case "courses":   return renderCourses();
+      case "progress":  return renderProgress();
+      case "certs":     return renderCerts();
+      case "settings":  return renderSettings();
+      default:          return renderOverview();
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -193,175 +270,610 @@ export default function DashboardPage() {
 
         {/* Main content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-
-            {/* Welcome header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h1 className="font-heading text-2xl font-bold text-slate-900">
-                  Xin chào, Văn A! 👋
-                </h1>
-                <p className="text-slate-500 text-sm mt-0.5">
-                  Hôm nay là Thứ Ba, 29/04/2025 · Bạn đang tiến bộ rất tốt!
-                </p>
-              </div>
-              <div className="flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl px-5 py-3 flex-shrink-0">
-                <span className="text-2xl">🔥</span>
-                <div>
-                  <p className="font-heading font-bold text-amber-700 text-lg leading-none">3 ngày</p>
-                  <p className="text-amber-600 text-xs mt-0.5">liên tiếp · Tiếp tục nhé!</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {STATS.map((stat, i) => (
-                <div key={i} className={`${stat.bg} border ${stat.border} rounded-2xl p-4 flex items-center gap-4`}>
-                  <div className={`w-11 h-11 rounded-xl bg-white shadow-sm flex items-center justify-center text-xl flex-shrink-0`}>
-                    {stat.icon}
-                  </div>
-                  <div>
-                    <p className={`font-heading font-bold text-2xl ${stat.color}`}>{stat.value}</p>
-                    <p className="text-slate-500 text-xs leading-tight mt-0.5">{stat.label}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Continue learning */}
-            <div>
-              <h2 className="font-heading font-bold text-slate-900 text-lg mb-4">Tiếp Tục Học</h2>
-              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex flex-col sm:flex-row">
-                  <div className={`sm:w-48 h-36 sm:h-auto bg-gradient-to-br ${ENROLLED[0].gradient} flex items-center justify-center flex-shrink-0 relative`}>
-                    <span className="text-5xl">{ENROLLED[0].emoji}</span>
-                    <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                      Đang học
-                    </div>
-                  </div>
-                  <div className="p-5 flex-1 space-y-4">
-                    <div>
-                      <h3 className="font-heading font-bold text-slate-900 text-base">{ENROLLED[0].title}</h3>
-                      <p className="text-slate-400 text-sm">{ENROLLED[0].instructor}</p>
-                    </div>
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-xs text-slate-500">
-                        <span>Đang học: <span className="text-blue-600 font-medium">{ENROLLED[0].lastLesson}</span></span>
-                        <span className="font-semibold">{ENROLLED[0].progress}%</span>
-                      </div>
-                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${ENROLLED[0].progress}%` }} />
-                      </div>
-                      <p className="text-slate-400 text-xs">{ENROLLED[0].done}/{ENROLLED[0].total} bài · {ENROLLED[0].timeLeft}</p>
-                    </div>
-                    <Link
-                      href={ENROLLED[0].link}
-                      className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-sm shadow-blue-200"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                      </svg>
-                      Tiếp tục học
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Two column: Courses + Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              {/* Enrolled courses */}
-              <div className="lg:col-span-3">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-heading font-bold text-slate-900 text-lg">Khóa Học Của Tôi</h2>
-                  <Link href="/templates/khoa-hoc" className="text-sm text-blue-600 font-semibold hover:underline">
-                    + Thêm khóa
-                  </Link>
-                </div>
-                <div className="space-y-3">
-                  {ENROLLED.map((course) => (
-                    <div key={course.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 hover:border-blue-200 hover:shadow-sm transition-all">
-                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${course.gradient} flex items-center justify-center text-2xl flex-shrink-0`}>
-                        {course.emoji}
-                      </div>
-                      <div className="flex-1 min-w-0 space-y-1.5">
-                        <p className="font-heading font-semibold text-slate-900 text-sm truncate">{course.title}</p>
-                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${course.progress}%` }} />
-                        </div>
-                        <p className="text-slate-400 text-xs">{course.done}/{course.total} bài · {course.progress}%</p>
-                      </div>
-                      <Link
-                        href={course.link}
-                        className={cn(
-                          "flex-shrink-0 text-xs font-semibold px-4 py-2 rounded-xl transition-colors",
-                          course.progress > 0
-                            ? "bg-blue-600 text-white hover:bg-blue-700"
-                            : "border border-slate-200 text-slate-600 hover:bg-slate-50"
-                        )}
-                      >
-                        {course.progress > 0 ? "Tiếp tục" : "Bắt đầu"}
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Activity feed */}
-              <div className="lg:col-span-2">
-                <h2 className="font-heading font-bold text-slate-900 text-lg mb-4">Hoạt Động Gần Đây</h2>
-                <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-0">
-                  {ACTIVITY.map((item, i) => (
-                    <div key={i} className={cn("flex items-start gap-3 py-3.5", i !== ACTIVITY.length - 1 && "border-b border-slate-100")}>
-                      <div className={`w-7 h-7 rounded-full ${item.color} flex items-center justify-center text-white text-[10px] flex-shrink-0 mt-0.5`}>
-                        {item.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-slate-700 text-xs leading-relaxed">{item.text}</p>
-                        <p className="text-slate-400 text-[11px] mt-0.5">{item.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Achievements */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-heading font-bold text-slate-900 text-lg">Thành Tích</h2>
-                <span className="text-sm text-slate-500">2/4 đạt được</span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {ACHIEVEMENTS.map((a, i) => (
-                  <div
-                    key={i}
-                    className={cn(
-                      "border rounded-2xl p-4 text-center transition-all",
-                      a.done
-                        ? "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 shadow-sm"
-                        : "bg-slate-50 border-slate-200 opacity-60"
-                    )}
-                  >
-                    <span className={cn("text-3xl block mb-2", !a.done && "grayscale")}>{a.icon}</span>
-                    <p className="font-heading font-bold text-slate-900 text-sm">{a.label}</p>
-                    <p className="text-slate-500 text-xs leading-tight mt-1">{a.desc}</p>
-                    {a.done ? (
-                      <span className="inline-block mt-2 text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">
-                        ✓ {a.date}
-                      </span>
-                    ) : (
-                      <span className="inline-block mt-2 text-[10px] text-slate-400">Chưa đạt</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+            {renderContent()}
           </div>
         </main>
       </div>
     </div>
   );
+
+  function renderOverview() {
+    return (
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="font-heading text-2xl font-bold text-slate-900">Xin chào, Văn A! 👋</h1>
+            <p className="text-slate-500 text-sm mt-0.5">Hôm nay là Thứ Ba, 29/04/2025 · Bạn đang tiến bộ rất tốt!</p>
+          </div>
+          <div className="flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl px-5 py-3 flex-shrink-0">
+            <span className="text-2xl">🔥</span>
+            <div>
+              <p className="font-heading font-bold text-amber-700 text-lg leading-none">3 ngày</p>
+              <p className="text-amber-600 text-xs mt-0.5">liên tiếp · Tiếp tục nhé!</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {STATS.map((stat, i) => (
+            <div key={i} className={`${stat.bg} border ${stat.border} rounded-2xl p-4 flex items-center gap-4`}>
+              <div className="w-11 h-11 rounded-xl bg-white shadow-sm flex items-center justify-center text-xl flex-shrink-0">{stat.icon}</div>
+              <div>
+                <p className={`font-heading font-bold text-2xl ${stat.color}`}>{stat.value}</p>
+                <p className="text-slate-500 text-xs leading-tight mt-0.5">{stat.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <h2 className="font-heading font-bold text-slate-900 text-lg mb-4">Tiếp Tục Học</h2>
+          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex flex-col sm:flex-row">
+              <div className={`sm:w-48 h-36 sm:h-auto bg-gradient-to-br ${ENROLLED[0].gradient} flex items-center justify-center flex-shrink-0 relative`}>
+                <span className="text-5xl">{ENROLLED[0].emoji}</span>
+                <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">Đang học</div>
+              </div>
+              <div className="p-5 flex-1 space-y-4">
+                <div>
+                  <h3 className="font-heading font-bold text-slate-900 text-base">{ENROLLED[0].title}</h3>
+                  <p className="text-slate-400 text-sm">{ENROLLED[0].instructor}</p>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>Đang học: <span className="text-blue-600 font-medium">{ENROLLED[0].lastLesson}</span></span>
+                    <span className="font-semibold">{ENROLLED[0].progress}%</span>
+                  </div>
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${ENROLLED[0].progress}%` }} />
+                  </div>
+                  <p className="text-slate-400 text-xs">{ENROLLED[0].done}/{ENROLLED[0].total} bài · {ENROLLED[0].timeLeft}</p>
+                </div>
+                <Link href={ENROLLED[0].link} className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors shadow-sm shadow-blue-200">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                  Tiếp tục học
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="lg:col-span-3">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-heading font-bold text-slate-900 text-lg">Khóa Học Của Tôi</h2>
+              <button onClick={() => setActiveNav("courses")} className="text-sm text-blue-600 font-semibold hover:underline">Xem tất cả →</button>
+            </div>
+            <div className="space-y-3">
+              {ENROLLED.map((course) => (
+                <div key={course.id} className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 hover:border-blue-200 hover:shadow-sm transition-all">
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${course.gradient} flex items-center justify-center text-2xl flex-shrink-0`}>{course.emoji}</div>
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <p className="font-heading font-semibold text-slate-900 text-sm truncate">{course.title}</p>
+                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${course.progress}%` }} />
+                    </div>
+                    <p className="text-slate-400 text-xs">{course.done}/{course.total} bài · {course.progress}%</p>
+                  </div>
+                  <Link href={course.link} className={cn("flex-shrink-0 text-xs font-semibold px-4 py-2 rounded-xl transition-colors", course.progress > 0 ? "bg-blue-600 text-white hover:bg-blue-700" : "border border-slate-200 text-slate-600 hover:bg-slate-50")}>
+                    {course.progress > 0 ? "Tiếp tục" : "Bắt đầu"}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="lg:col-span-2">
+            <h2 className="font-heading font-bold text-slate-900 text-lg mb-4">Hoạt Động Gần Đây</h2>
+            <div className="bg-white border border-slate-200 rounded-2xl p-4">
+              {ACTIVITY.map((item, i) => (
+                <div key={i} className={cn("flex items-start gap-3 py-3.5", i !== ACTIVITY.length - 1 && "border-b border-slate-100")}>
+                  <div className={`w-7 h-7 rounded-full ${item.color} flex items-center justify-center text-white text-[10px] flex-shrink-0 mt-0.5`}>{item.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-slate-700 text-xs leading-relaxed">{item.text}</p>
+                    <p className="text-slate-400 text-[11px] mt-0.5">{item.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-heading font-bold text-slate-900 text-lg">Thành Tích</h2>
+            <span className="text-sm text-slate-500">2/4 đạt được</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {ACHIEVEMENTS.map((a, i) => (
+              <div key={i} className={cn("border rounded-2xl p-4 text-center transition-all", a.done ? "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 shadow-sm" : "bg-slate-50 border-slate-200 opacity-60")}>
+                <span className={cn("text-3xl block mb-2", !a.done && "grayscale")}>{a.icon}</span>
+                <p className="font-heading font-bold text-slate-900 text-sm">{a.label}</p>
+                <p className="text-slate-500 text-xs leading-tight mt-1">{a.desc}</p>
+                {a.done
+                  ? <span className="inline-block mt-2 text-[10px] font-bold bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full">✓ {a.date}</span>
+                  : <span className="inline-block mt-2 text-[10px] text-slate-400">Chưa đạt</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function renderCourses() {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-slate-900">Khóa Học Của Tôi</h1>
+          <p className="text-slate-500 text-sm mt-0.5">Quản lý tất cả khóa học bạn đang theo học</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1 bg-slate-100 rounded-xl p-1 w-fit">
+          {([
+            { id: "learning",  label: "Đang học",    count: 2 },
+            { id: "completed", label: "Hoàn thành",  count: 0 },
+            { id: "wishlist",  label: "Wishlist",     count: 3 },
+          ] as const).map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setCourseTab(tab.id)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                courseTab === tab.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+              )}
+            >
+              {tab.label}
+              <span className={cn("text-[11px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center", courseTab === tab.id ? "bg-blue-100 text-blue-700" : "bg-slate-200 text-slate-500")}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Đang học */}
+        {courseTab === "learning" && (
+          <div className="space-y-4">
+            {ENROLLED.map((course) => (
+              <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 hover:shadow-md transition-all">
+                <div className="flex flex-col sm:flex-row">
+                  <div className={`sm:w-40 h-32 sm:h-auto bg-gradient-to-br ${course.gradient} flex items-center justify-center flex-shrink-0 relative`}>
+                    <span className="text-4xl">{course.emoji}</span>
+                    {course.progress > 0 && (
+                      <div className="absolute bottom-2 left-2 right-2">
+                        <div className="h-1 bg-white/30 rounded-full overflow-hidden">
+                          <div className="h-full bg-white rounded-full" style={{ width: `${course.progress}%` }} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5 flex-1 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{course.category}</span>
+                        <h3 className="font-heading font-bold text-slate-900 text-base mt-1.5">{course.title}</h3>
+                        <p className="text-slate-400 text-sm">{course.instructor}</p>
+                      </div>
+                      <span className="text-[11px] text-slate-400 flex-shrink-0 whitespace-nowrap">Đăng ký: {course.enrolled}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs text-slate-500">
+                        <span>{course.done}/{course.total} bài học</span>
+                        <span className="font-bold text-blue-600">{course.progress}%</span>
+                      </div>
+                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${course.progress}%`, background: course.progress > 0 ? "linear-gradient(to right,#3b82f6,#6366f1)" : undefined }}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-slate-400 text-xs">
+                        {course.progress > 0 ? `📌 ${course.lastLesson}` : "Chưa bắt đầu"} · {course.timeLeft}
+                      </p>
+                      <Link href={course.link} className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors">
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                        {course.progress > 0 ? "Tiếp tục học" : "Bắt đầu"}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Hoàn thành */}
+        {courseTab === "completed" && (
+          <div className="text-center py-20">
+            <span className="text-6xl">🎓</span>
+            <h3 className="font-heading font-bold text-slate-900 text-lg mt-4 mb-2">Chưa hoàn thành khóa học nào</h3>
+            <p className="text-slate-500 text-sm max-w-xs mx-auto">Hãy tiếp tục học để hoàn thành khóa học đầu tiên và nhận chứng chỉ!</p>
+            <Link href="/templates/khoa-hoc/learn/ban-hang-online" className="inline-block mt-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors">
+              Tiếp tục học ngay
+            </Link>
+          </div>
+        )}
+
+        {/* Wishlist */}
+        {courseTab === "wishlist" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {WISHLIST.map((course) => (
+              <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 hover:shadow-md transition-all">
+                <div className={`h-32 bg-gradient-to-br ${course.gradient} flex items-center justify-center relative`}>
+                  <span className="text-5xl">{course.emoji}</span>
+                  <button className="absolute top-3 right-3 w-7 h-7 bg-white/20 rounded-full flex items-center justify-center text-sm hover:bg-white/40 transition-colors">❤️</button>
+                </div>
+                <div className="p-4 space-y-2">
+                  <h3 className="font-heading font-semibold text-slate-900 text-sm leading-snug">{course.title}</h3>
+                  <p className="text-slate-400 text-xs">{course.instructor}</p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-amber-400 text-xs">⭐</span>
+                    <span className="text-xs font-semibold text-slate-700">{course.rating}</span>
+                    <span className="text-xs text-slate-400">({course.students.toLocaleString()} học viên)</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <div>
+                      <span className="font-heading font-bold text-slate-900 text-base">{course.price}</span>
+                      <span className="text-slate-400 line-through text-xs ml-2">{course.originalPrice}</span>
+                    </div>
+                    <Link href="/templates/khoa-hoc/course/ban-hang-online" className="text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
+                      Đăng ký
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderProgress() {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-slate-900">Tiến Độ Học</h1>
+          <p className="text-slate-500 text-sm mt-0.5">Theo dõi quá trình học tập của bạn</p>
+        </div>
+
+        {/* Summary stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { icon: "⏱️", value: "5h",  label: "Tuần này",       note: "+1.5h so tuần trước", up: true },
+            { icon: "📖", value: "3",    label: "Bài hoàn thành", note: "+3 bài mới",           up: true },
+            { icon: "🔥", value: "3",    label: "Ngày streak",    note: "Kỷ lục: 3 ngày",       up: null },
+            { icon: "📈", value: "19%",  label: "Tiến độ TB",     note: "Đang học tích cực",    up: null },
+          ].map((s, i) => (
+            <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 space-y-1">
+              <span className="text-2xl">{s.icon}</span>
+              <p className="font-heading font-bold text-slate-900 text-2xl">{s.value}</p>
+              <p className="text-slate-500 text-xs">{s.label}</p>
+              <p className={cn("text-xs font-medium", s.up ? "text-green-600" : "text-slate-400")}>{s.note}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Weekly bar chart */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-heading font-bold text-slate-900 text-base">Thời Gian Học 7 Ngày Qua</h2>
+            <span className="text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full">Tổng: 5h 00p</span>
+          </div>
+          <div className="flex items-end gap-2 h-28">
+            {WEEKLY_DATA.map((d, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                <div
+                  className={cn("w-full rounded-t-lg transition-all", d.minutes > 0 ? "bg-blue-500 hover:bg-blue-600" : "bg-slate-100")}
+                  style={{ height: `${d.minutes > 0 ? (d.minutes / maxMinutes) * 100 : 8}%` }}
+                  title={`${d.day}: ${d.minutes} phút`}
+                />
+                <span className="text-[10px] text-slate-400">{d.day}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex items-center gap-4 text-xs text-slate-400">
+            <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-blue-500 inline-block" /> Có học</div>
+            <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-slate-100 border border-slate-200 inline-block" /> Không học</div>
+          </div>
+        </div>
+
+        {/* Per-course module breakdown */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6">
+          <h2 className="font-heading font-bold text-slate-900 text-base mb-5">Tiến Độ Từng Khóa Học</h2>
+          <div className="space-y-7">
+            {ENROLLED.map((course) => (
+              <div key={course.id}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${course.gradient} flex items-center justify-center text-lg flex-shrink-0`}>{course.emoji}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-heading font-semibold text-slate-900 text-sm truncate">{course.title}</p>
+                    <p className="text-slate-400 text-xs">{course.done}/{course.total} bài · {course.progress}% hoàn thành</p>
+                  </div>
+                  <span className={cn("text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0",
+                    course.progress > 0 ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-500"
+                  )}>
+                    {course.progress > 0 ? "Đang học" : "Chưa bắt đầu"}
+                  </span>
+                </div>
+                <div className="space-y-2 pl-12">
+                  {MODULE_PROGRESS.map((mod, j) => (
+                    <div key={j} className="flex items-center gap-3">
+                      <p className="text-xs text-slate-600 w-52 flex-shrink-0 truncate">{mod.title}</p>
+                      <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-400 rounded-full" style={{ width: `${course.progress > 0 ? mod.pct : 0}%` }} />
+                      </div>
+                      <span className="text-[11px] text-slate-400 w-8 text-right flex-shrink-0">
+                        {course.progress > 0 ? `${mod.done}/${mod.total}` : `0/${mod.total}`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Insights */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">💡 Gợi Ý Cá Nhân Hóa</h2>
+          <div className="space-y-3">
+            {[
+              { icon: "🎯", title: "Gần xong Module 1", desc: "Chỉ còn 1 bài nữa là xong Module 1. Hãy học hôm nay để hoàn thành sớm!" },
+              { icon: "⏰", title: "Học đều hơn", desc: "Bạn hay học vào cuối tuần. Thử học 20 phút mỗi ngày để duy trì streak tốt hơn." },
+              { icon: "📊", title: "Tăng tốc một chút", desc: "Trung bình 43 phút/ngày. Tăng lên 60 phút sẽ giúp hoàn thành trong 2 tuần." },
+            ].map((tip, i) => (
+              <div key={i} className="flex items-start gap-3 bg-white rounded-xl p-4">
+                <span className="text-xl flex-shrink-0">{tip.icon}</span>
+                <div>
+                  <p className="font-semibold text-slate-900 text-sm">{tip.title}</p>
+                  <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{tip.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function renderCerts() {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-slate-900">Chứng Chỉ</h1>
+          <p className="text-slate-500 text-sm mt-0.5">Chứng nhận kỹ năng sau khi hoàn thành khóa học</p>
+        </div>
+
+        {/* In-progress certs */}
+        <div>
+          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">🔒 Đang Tiến Hành</h2>
+          <div className="space-y-4">
+            {ENROLLED.map((course) => (
+              <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                <div className="flex flex-col sm:flex-row">
+                  {/* Locked cert preview */}
+                  <div className="sm:w-52 flex-shrink-0 bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center p-5">
+                    <div className="w-full aspect-[4/3] rounded-xl border-2 border-dashed border-slate-300 relative overflow-hidden flex flex-col items-center justify-center gap-2">
+                      <span className="text-4xl opacity-20">{course.emoji}</span>
+                      <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-1">
+                        <span className="text-3xl">🔒</span>
+                        <p className="text-xs font-bold text-slate-500">{course.progress}% / 100%</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5 flex-1 space-y-4">
+                    <div>
+                      <h3 className="font-heading font-bold text-slate-900 text-base">{course.title}</h3>
+                      <p className="text-slate-400 text-sm">Cấp bởi SellOS Academy · {course.instructor}</p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-500">Tiến độ hoàn thành</span>
+                        <span className="font-bold text-slate-700">{course.progress}%</span>
+                      </div>
+                      <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500" style={{ width: `${course.progress}%` }} />
+                      </div>
+                      <p className="text-slate-400 text-xs">Cần 100% để mở khoá chứng chỉ</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold text-slate-700">Điều kiện nhận chứng chỉ:</p>
+                      {[
+                        { text: `Hoàn thành ${course.total} bài học`, done: course.done >= course.total },
+                        { text: "Đạt điểm bài kiểm tra ≥ 80%", done: false },
+                        { text: "Nộp bài tập thực hành cuối khoá", done: false },
+                      ].map((req, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <div className={cn("w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0", req.done ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-400")}>
+                            {req.done ? "✓" : "○"}
+                          </div>
+                          <span className={cn("text-xs", req.done ? "text-green-700 font-medium" : "text-slate-500")}>{req.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <Link href={course.link} className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-colors">
+                      Tiếp tục học để nhận chứng chỉ →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sample earned cert */}
+        <div>
+          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">🏆 Chứng Chỉ Mẫu (Sau Khi Hoàn Thành)</h2>
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <div className="flex flex-col sm:flex-row gap-6 items-center">
+              <div className="w-full sm:w-68 flex-shrink-0">
+                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-center relative overflow-hidden shadow-xl">
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400" />
+                  <div className="text-4xl mb-3">🏆</div>
+                  <p className="text-amber-400 text-[11px] font-bold tracking-widest uppercase mb-1">SellOS Academy</p>
+                  <p className="text-slate-300 text-xs mb-2">Chứng nhận hoàn thành</p>
+                  <p className="text-white font-heading font-bold text-sm leading-snug mb-3">Bán Hàng Online Từ 0 Đến Đơn Đầu Tiên</p>
+                  <p className="text-slate-300 text-xs">Cấp cho: <span className="text-white font-semibold">Nguyễn Văn A</span></p>
+                  <p className="text-slate-400 text-[11px] mt-1">Ngày cấp: 30/06/2025</p>
+                  <div className="mt-3 pt-3 border-t border-white/20">
+                    <p className="text-slate-500 text-[10px]">ID: SOSA-2025-BHO-001</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Chứng chỉ mẫu</span>
+                  <h3 className="font-heading font-bold text-slate-900 text-lg mt-1">Bán Hàng Online Từ 0 Đến Đơn Đầu Tiên</h3>
+                  <p className="text-slate-500 text-sm mt-1">SellOS Academy · Nguyễn Thành Nam</p>
+                </div>
+                <p className="text-slate-500 text-sm leading-relaxed">Hoàn thành khóa học để nhận chứng chỉ được xác minh — chứng nhận bạn đã nắm vững kỹ năng xây dựng hệ thống bán hàng tự động.</p>
+                <div className="flex flex-wrap gap-2">
+                  <button disabled className="flex items-center gap-2 bg-slate-100 text-slate-400 font-semibold px-4 py-2 rounded-xl text-sm cursor-not-allowed">⬇ Tải PDF</button>
+                  <button disabled className="flex items-center gap-2 border border-slate-200 text-slate-400 font-semibold px-4 py-2 rounded-xl text-sm cursor-not-allowed">🔗 Chia sẻ LinkedIn</button>
+                </div>
+                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5">
+                  ⚠️ Hoàn thành 100% khóa học để mở khoá tải xuống & chia sẻ chứng chỉ
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function renderSettings() {
+    return (
+      <div className="space-y-8 max-w-2xl">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-slate-900">Cài Đặt Tài Khoản</h1>
+          <p className="text-slate-500 text-sm mt-0.5">Quản lý thông tin cá nhân và tùy chọn của bạn</p>
+        </div>
+
+        {/* Profile */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-heading font-bold text-slate-900 text-base">Thông Tin Cá Nhân</h2>
+            <button
+              onClick={() => setProfileEditing((v) => !v)}
+              className={cn("text-sm font-semibold px-4 py-1.5 rounded-xl transition-colors", profileEditing ? "bg-blue-600 text-white hover:bg-blue-700" : "border border-slate-200 text-slate-600 hover:bg-slate-50")}
+            >
+              {profileEditing ? "💾 Lưu" : "✏️ Chỉnh sửa"}
+            </button>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl">A</div>
+              {profileEditing && (
+                <button className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs hover:bg-blue-700">+</button>
+              )}
+            </div>
+            <div>
+              <p className="font-semibold text-slate-900 text-sm">Nguyễn Văn A</p>
+              <p className="text-slate-400 text-xs">Học viên · Tham gia tháng 4/2025</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { label: "Họ và tên",    value: "Nguyễn Văn A",              type: "text",  readonly: false },
+              { label: "Email",        value: "nguyenvana@email.com",       type: "email", readonly: true  },
+              { label: "Số điện thoại", value: "09xx xxx xxx",             type: "tel",   readonly: false },
+              { label: "Múi giờ",      value: "Asia/Ho_Chi_Minh (GMT+7)", type: "text",  readonly: false },
+            ].map((f, i) => (
+              <div key={i}>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">{f.label}</label>
+                <input
+                  type={f.type}
+                  defaultValue={f.value}
+                  readOnly={!profileEditing || f.readonly}
+                  className={cn("w-full border rounded-xl px-3.5 py-2.5 text-sm transition-all",
+                    profileEditing && !f.readonly
+                      ? "border-blue-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                      : "border-slate-100 bg-slate-50 text-slate-600 cursor-default"
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Giới thiệu bản thân</label>
+            <textarea
+              rows={3}
+              readOnly={!profileEditing}
+              defaultValue="Đang học bán hàng online để tự do tài chính."
+              className={cn("w-full border rounded-xl px-3.5 py-2.5 text-sm transition-all resize-none",
+                profileEditing
+                  ? "border-blue-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                  : "border-slate-100 bg-slate-50 text-slate-600 cursor-default"
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Notifications */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+          <h2 className="font-heading font-bold text-slate-900 text-base">Thông Báo</h2>
+          {([
+            { key: "emailReminder", label: "Nhắc nhở học tập",     desc: "Nhận email nhắc khi bạn chưa học trong 2 ngày" },
+            { key: "courseUpdates", label: "Cập nhật khóa học",     desc: "Thông báo khi khóa học có nội dung mới" },
+            { key: "weeklyReport",  label: "Báo cáo tuần",          desc: "Tóm tắt tiến độ gửi mỗi thứ Hai hàng tuần" },
+            { key: "promotions",    label: "Khuyến mãi & ưu đãi",  desc: "Thông báo về chương trình giảm giá khóa học" },
+          ] as const).map((item) => (
+            <div key={item.key} className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-slate-900">{item.label}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{item.desc}</p>
+              </div>
+              <button
+                onClick={() => setNotifSettings((prev) => ({ ...prev, [item.key]: !prev[item.key] }))}
+                className={cn("relative w-11 h-6 rounded-full transition-colors flex-shrink-0", notifSettings[item.key] ? "bg-blue-600" : "bg-slate-200")}
+              >
+                <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform", notifSettings[item.key] ? "translate-x-5" : "translate-x-0.5")} />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Security */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+          <h2 className="font-heading font-bold text-slate-900 text-base">Bảo Mật</h2>
+          <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Mật khẩu</p>
+              <p className="text-xs text-slate-400">Lần đổi cuối: 5 ngày trước</p>
+            </div>
+            <button className="text-sm font-semibold text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">Đổi mật khẩu</button>
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Xác thực 2 bước (2FA)</p>
+              <p className="text-xs text-slate-400">Bảo vệ tài khoản của bạn</p>
+            </div>
+            <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full">Sắp ra mắt</span>
+          </div>
+        </div>
+
+        {/* Subscription */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="font-heading font-bold text-slate-900 text-base">Gói Đăng Ký</h2>
+              <div className="mt-1 flex items-center gap-2 flex-wrap">
+                <span className="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">Gói Basic</span>
+                <span className="text-slate-500 text-sm">· Học trọn đời</span>
+              </div>
+              <p className="text-slate-400 text-xs mt-1">Kích hoạt: 20/04/2025 · 2 khóa học</p>
+            </div>
+            <Link href="/templates/khoa-hoc" className="text-sm font-semibold text-blue-600 hover:text-blue-700 bg-white border border-blue-200 px-4 py-2 rounded-xl hover:shadow-sm transition-all flex-shrink-0">
+              Nâng cấp VIP →
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
