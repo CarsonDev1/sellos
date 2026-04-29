@@ -157,7 +157,11 @@ export default function DashboardPage() {
         </button>
 
         <Link href="/templates/khoa-hoc" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white text-sm">📚</div>
+          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+              <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838l-2.727 1.17 1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+              </svg>
+            </div>
           <span className="font-heading font-bold text-slate-900 text-base">
             SellOS<span className="text-blue-600">Academy</span>
           </span>
@@ -650,48 +654,43 @@ export default function DashboardPage() {
 
         {/* In-progress certs */}
         <div>
-          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">🔒 Đang Tiến Hành</h2>
+          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">Đang Tiến Hành</h2>
           <div className="space-y-4">
             {ENROLLED.map((course) => (
-              <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <div className="flex flex-col sm:flex-row">
-                  {/* Locked cert preview */}
-                  <div className="sm:w-52 flex-shrink-0 bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center p-5">
-                    <div className="w-full aspect-[4/3] rounded-xl border-2 border-dashed border-slate-300 relative overflow-hidden flex flex-col items-center justify-center gap-2">
-                      <span className="text-4xl opacity-20">{course.emoji}</span>
-                      <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-1">
-                        <span className="text-3xl">🔒</span>
-                        <p className="text-xs font-bold text-slate-500">{course.progress}% / 100%</p>
-                      </div>
+              <div key={course.id} className="bg-white border border-slate-200 rounded-2xl p-5">
+                <div className="flex items-start gap-4">
+                  {/* Locked icon */}
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${course.gradient} flex items-center justify-center flex-shrink-0 relative`}>
+                    <span className="text-2xl">{course.emoji}</span>
+                    <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                      </svg>
                     </div>
                   </div>
-                  <div className="p-5 flex-1 space-y-4">
+                  <div className="flex-1 min-w-0 space-y-3">
                     <div>
-                      <h3 className="font-heading font-bold text-slate-900 text-base">{course.title}</h3>
-                      <p className="text-slate-400 text-sm">Cấp bởi SellOS Academy · {course.instructor}</p>
+                      <h3 className="font-heading font-bold text-slate-900 text-base leading-snug">{course.title}</h3>
+                      <p className="text-slate-400 text-sm mt-0.5">Cấp bởi SellOS Academy · {course.instructor}</p>
                     </div>
                     <div className="space-y-1.5">
                       <div className="flex justify-between text-xs">
                         <span className="text-slate-500">Tiến độ hoàn thành</span>
-                        <span className="font-bold text-slate-700">{course.progress}%</span>
+                        <span className="font-bold text-slate-700">{course.progress}% / 100%</span>
                       </div>
-                      <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500" style={{ width: `${course.progress}%` }} />
+                      <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all" style={{ width: `${course.progress}%` }} />
                       </div>
-                      <p className="text-slate-400 text-xs">Cần 100% để mở khoá chứng chỉ</p>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-xs font-semibold text-slate-700">Điều kiện nhận chứng chỉ:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {[
                         { text: `Hoàn thành ${course.total} bài học`, done: course.done >= course.total },
-                        { text: "Đạt điểm bài kiểm tra ≥ 80%", done: false },
-                        { text: "Nộp bài tập thực hành cuối khoá", done: false },
+                        { text: "Điểm bài kiểm tra ≥ 80%", done: false },
+                        { text: "Nộp bài tập cuối khoá", done: false },
                       ].map((req, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <div className={cn("w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0", req.done ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-400")}>
-                            {req.done ? "✓" : "○"}
-                          </div>
-                          <span className={cn("text-xs", req.done ? "text-green-700 font-medium" : "text-slate-500")}>{req.text}</span>
+                        <div key={i} className={cn("flex items-center gap-2 rounded-lg px-3 py-2 text-xs", req.done ? "bg-green-50 text-green-700" : "bg-slate-50 text-slate-500")}>
+                          <span className="flex-shrink-0 text-base">{req.done ? "✅" : "⬜"}</span>
+                          {req.text}
                         </div>
                       ))}
                     </div>
@@ -707,38 +706,41 @@ export default function DashboardPage() {
 
         {/* Sample earned cert */}
         <div>
-          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">🏆 Chứng Chỉ Mẫu (Sau Khi Hoàn Thành)</h2>
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <div className="flex flex-col sm:flex-row gap-6 items-center">
-              <div className="w-full sm:w-68 flex-shrink-0">
-                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-center relative overflow-hidden shadow-xl">
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400" />
-                  <div className="text-4xl mb-3">🏆</div>
-                  <p className="text-amber-400 text-[11px] font-bold tracking-widest uppercase mb-1">SellOS Academy</p>
-                  <p className="text-slate-300 text-xs mb-2">Chứng nhận hoàn thành</p>
-                  <p className="text-white font-heading font-bold text-sm leading-snug mb-3">Bán Hàng Online Từ 0 Đến Đơn Đầu Tiên</p>
+          <h2 className="font-heading font-bold text-slate-900 text-base mb-4">Chứng Chỉ Mẫu — Sau Khi Hoàn Thành</h2>
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6">
+            {/* Certificate card */}
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden shadow-xl max-w-sm mx-auto">
+              <div className="h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400" />
+              <div className="p-8 text-center">
+                <p className="text-amber-400 text-[11px] font-bold tracking-widest uppercase mb-3">SellOS Academy</p>
+                <div className="w-16 h-16 rounded-full bg-amber-400/20 border-2 border-amber-400/50 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">🏆</span>
+                </div>
+                <p className="text-slate-300 text-xs mb-1">Chứng nhận hoàn thành khóa học</p>
+                <p className="text-white font-heading font-bold text-base leading-snug mt-2 mb-4">Bán Hàng Online Từ 0 Đến Đơn Đầu Tiên</p>
+                <div className="border-t border-white/10 pt-4 space-y-1">
                   <p className="text-slate-300 text-xs">Cấp cho: <span className="text-white font-semibold">Nguyễn Văn A</span></p>
-                  <p className="text-slate-400 text-[11px] mt-1">Ngày cấp: 30/06/2025</p>
-                  <div className="mt-3 pt-3 border-t border-white/20">
-                    <p className="text-slate-500 text-[10px]">ID: SOSA-2025-BHO-001</p>
-                  </div>
+                  <p className="text-slate-400 text-[11px]">Ngày cấp: 30/06/2025</p>
+                  <p className="text-slate-600 text-[10px] mt-2">ID: SOSA-2025-BHO-001</p>
                 </div>
               </div>
-              <div className="flex-1 space-y-4">
-                <div>
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Chứng chỉ mẫu</span>
-                  <h3 className="font-heading font-bold text-slate-900 text-lg mt-1">Bán Hàng Online Từ 0 Đến Đơn Đầu Tiên</h3>
-                  <p className="text-slate-500 text-sm mt-1">SellOS Academy · Nguyễn Thành Nam</p>
-                </div>
-                <p className="text-slate-500 text-sm leading-relaxed">Hoàn thành khóa học để nhận chứng chỉ được xác minh — chứng nhận bạn đã nắm vững kỹ năng xây dựng hệ thống bán hàng tự động.</p>
-                <div className="flex flex-wrap gap-2">
-                  <button disabled className="flex items-center gap-2 bg-slate-100 text-slate-400 font-semibold px-4 py-2 rounded-xl text-sm cursor-not-allowed">⬇ Tải PDF</button>
-                  <button disabled className="flex items-center gap-2 border border-slate-200 text-slate-400 font-semibold px-4 py-2 rounded-xl text-sm cursor-not-allowed">🔗 Chia sẻ LinkedIn</button>
-                </div>
-                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5">
-                  ⚠️ Hoàn thành 100% khóa học để mở khoá tải xuống & chia sẻ chứng chỉ
-                </p>
+            </div>
+            {/* Actions */}
+            <div className="text-center space-y-3">
+              <p className="text-slate-500 text-sm">Hoàn thành 100% khóa học để mở khoá chứng chỉ và tải xuống.</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <button disabled className="flex items-center gap-2 bg-slate-100 text-slate-400 font-semibold px-5 py-2.5 rounded-xl text-sm cursor-not-allowed">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  Tải PDF
+                </button>
+                <button disabled className="flex items-center gap-2 border border-slate-200 text-slate-400 font-semibold px-5 py-2.5 rounded-xl text-sm cursor-not-allowed">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+                  Chia sẻ LinkedIn
+                </button>
               </div>
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 max-w-sm mx-auto">
+                ⚠️ Đang khoá — hoàn thành 100% để mở tính năng này
+              </p>
             </div>
           </div>
         </div>
