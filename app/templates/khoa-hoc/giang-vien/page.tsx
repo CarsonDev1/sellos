@@ -13,7 +13,7 @@ const INSTRUCTORS = [
     id: "nguyen-thanh-nam",
     name: "Nguyễn Thành Nam",
     title: "Founder SellOS · Chuyên gia Bán hàng Online",
-    avatar: "NTN",
+    photo: "https://randomuser.me/api/portraits/men/32.jpg",
     gradient: "from-blue-500 to-indigo-600",
     bio: "10 năm kinh nghiệm xây dựng hệ thống bán hàng tự động. Từng giúp 500+ học viên có đơn hàng đầu tiên trong vòng 7 ngày. Founder của SellOS — nền tảng AI bán hàng #1 Việt Nam.",
     specialties: ["Bán hàng tự động", "AI & Automation", "Funnel Marketing"],
@@ -27,7 +27,7 @@ const INSTRUCTORS = [
     id: "tran-hai-dang",
     name: "Trần Hải Đăng",
     title: "Facebook & TikTok Ads Expert",
-    avatar: "THD",
+    photo: "https://randomuser.me/api/portraits/men/45.jpg",
     gradient: "from-rose-500 to-pink-600",
     bio: "Cựu Creative Strategist tại Meta Vietnam. Đã quản lý ngân sách quảng cáo lên đến $500k/tháng cho các thương hiệu lớn. Tác giả của framework 'Hook-Story-Offer' được 10,000+ người áp dụng.",
     specialties: ["Facebook Ads", "TikTok Ads", "Creative Strategy"],
@@ -41,7 +41,7 @@ const INSTRUCTORS = [
     id: "le-minh-chau",
     name: "Lê Minh Châu",
     title: "Email Marketing & CRM Specialist",
-    avatar: "LMC",
+    photo: "https://randomuser.me/api/portraits/women/28.jpg",
     gradient: "from-emerald-500 to-teal-600",
     bio: "7 năm kinh nghiệm Email Marketing với tỉ lệ mở email trung bình 45% — gấp 3 lần ngành. Đã xây dựng danh sách email 200k+ subscribers cho các thương hiệu B2C Việt Nam.",
     specialties: ["Email Marketing", "CRM", "Marketing Automation"],
@@ -55,7 +55,7 @@ const INSTRUCTORS = [
     id: "pham-quang-huy",
     name: "Phạm Quang Huy",
     title: "Shopee & Lazada Top Seller",
-    avatar: "PQH",
+    photo: "https://randomuser.me/api/portraits/men/67.jpg",
     gradient: "from-orange-500 to-red-500",
     bio: "Top Seller Shopee 3 năm liên tiếp với doanh thu 15 tỷ+/năm. Đã đào tạo hơn 1,000 người bán hàng TMĐT từ 0 lên thu nhập ổn định. Chuyên gia tối ưu shop và quảng cáo nội sàn.",
     specialties: ["Shopee", "Lazada", "TMĐT", "Quảng cáo nội sàn"],
@@ -69,7 +69,7 @@ const INSTRUCTORS = [
     id: "vu-thi-lan",
     name: "Vũ Thị Lan",
     title: "Content Marketing & SEO Strategist",
-    avatar: "VTL",
+    photo: "https://randomuser.me/api/portraits/women/44.jpg",
     gradient: "from-violet-500 to-purple-600",
     bio: "Content Strategist với portfolio 200+ bài SEO top 1 Google. Founder của blog kinh doanh 500k view/tháng. Chuyên đào tạo Content Marketing thực chiến cho người mới bắt đầu.",
     specialties: ["SEO", "Content Marketing", "Copywriting"],
@@ -83,7 +83,7 @@ const INSTRUCTORS = [
     id: "hoang-minh-duc",
     name: "Hoàng Minh Đức",
     title: "Serial Entrepreneur · Business Mentor",
-    avatar: "HMD",
+    photo: "https://randomuser.me/api/portraits/men/23.jpg",
     gradient: "from-amber-500 to-yellow-500",
     bio: "3 startup thành công với tổng định giá 50 tỷ+. Mentor tại Vietnam Startup Ecosystem và nhiều chương trình ươm tạo. Chuyên tư vấn mô hình kinh doanh online từ ý tưởng đến dòng tiền.",
     specialties: ["Khởi nghiệp", "Business Model", "Fundraising"],
@@ -143,8 +143,8 @@ export default function InstructorsPage() {
               {/* Avatar side */}
               <div className={`lg:w-72 flex-shrink-0 bg-gradient-to-br ${featured.gradient} flex items-center justify-center p-12`}>
                 <div className="text-center">
-                  <div className="w-28 h-28 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-4xl mx-auto mb-4 ring-4 ring-white/30">
-                    {featured.avatar}
+                  <div className="w-28 h-28 rounded-full overflow-hidden mx-auto mb-4 ring-4 ring-white/40 shadow-xl">
+                    <img src={featured.photo} alt={featured.name} className="w-full h-full object-cover" />
                   </div>
                   <p className="text-white font-heading font-bold text-lg">{featured.name}</p>
                   <p className="text-white/80 text-sm mt-1">⭐ {featured.rating} · {featured.students.toLocaleString()} học viên</p>
@@ -191,10 +191,8 @@ export default function InstructorsPage() {
                 {/* Header gradient */}
                 <div className={`h-24 bg-gradient-to-br ${inst.gradient} relative`}>
                   <div className="absolute -bottom-8 left-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center font-bold text-xl ring-2 ring-white" style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }}>
-                      <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${inst.gradient} flex items-center justify-center text-white font-bold text-lg`}>
-                        {inst.avatar}
-                      </div>
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md ring-2 ring-white">
+                      <img src={inst.photo} alt={inst.name} className="w-full h-full object-cover" />
                     </div>
                   </div>
                 </div>
