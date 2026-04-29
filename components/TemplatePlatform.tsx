@@ -13,7 +13,8 @@ const TEMPLATES = [
     gradient: "from-blue-500 to-indigo-600",
     tag: "Conversion cao",
     tagColor: "border-blue-200 text-blue-700 bg-blue-50",
-    bars: ["bg-blue-200", "bg-indigo-200", "bg-blue-300"],
+    previewUrl: "/templates/khoa-hoc",
+    link: "/templates/khoa-hoc",
   },
   {
     icon: "🛒",
@@ -22,7 +23,8 @@ const TEMPLATES = [
     gradient: "from-rose-500 to-pink-600",
     tag: "Mới nhất",
     tagColor: "border-rose-200 text-rose-700 bg-rose-50",
-    bars: ["bg-rose-200", "bg-pink-200", "bg-rose-300"],
+    previewUrl: null,
+    link: null,
   },
   {
     icon: "💼",
@@ -31,7 +33,8 @@ const TEMPLATES = [
     gradient: "from-violet-500 to-purple-600",
     tag: "Conversion cao",
     tagColor: "border-violet-200 text-violet-700 bg-violet-50",
-    bars: ["bg-violet-200", "bg-purple-200", "bg-violet-300"],
+    previewUrl: null,
+    link: null,
   },
   {
     icon: "🎯",
@@ -40,7 +43,8 @@ const TEMPLATES = [
     gradient: "from-amber-500 to-orange-600",
     tag: "Mới nhất",
     tagColor: "border-amber-200 text-amber-700 bg-amber-50",
-    bars: ["bg-amber-200", "bg-orange-200", "bg-amber-300"],
+    previewUrl: null,
+    link: null,
   },
   {
     icon: "🎉",
@@ -49,7 +53,8 @@ const TEMPLATES = [
     gradient: "from-teal-500 to-emerald-600",
     tag: "Conversion cao",
     tagColor: "border-teal-200 text-teal-700 bg-teal-50",
-    bars: ["bg-teal-200", "bg-emerald-200", "bg-teal-300"],
+    previewUrl: null,
+    link: null,
   },
   {
     icon: "🥗",
@@ -58,7 +63,8 @@ const TEMPLATES = [
     gradient: "from-green-500 to-lime-600",
     tag: "Mới nhất",
     tagColor: "border-green-200 text-green-700 bg-green-50",
-    bars: ["bg-green-200", "bg-lime-200", "bg-green-300"],
+    previewUrl: null,
+    link: null,
   },
 ];
 
@@ -105,26 +111,42 @@ export default function TemplatePlatform() {
               className="group rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-lg hover:border-blue-200 transition-all overflow-hidden hover:-translate-y-1"
             >
               {/* Template preview */}
-              <div
-                className={`h-36 bg-gradient-to-br ${t.gradient} p-4 flex flex-col justify-between relative overflow-hidden`}
-              >
-                {/* Fake browser chrome */}
-                <div className="flex gap-1 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
+              {t.previewUrl ? (
+                <div className="h-36 relative overflow-hidden bg-slate-100">
+                  <iframe
+                    src={t.previewUrl}
+                    title={`${t.name} preview`}
+                    className="absolute top-0 left-0 border-0 pointer-events-none"
+                    style={{
+                      width: "1280px",
+                      height: "720px",
+                      transform: "scale(0.29)",
+                      transformOrigin: "top left",
+                    }}
+                    scrolling="no"
+                    loading="lazy"
+                    tabIndex={-1}
+                  />
+                  {/* Subtle overlay so card hover looks clean */}
+                  <div className="absolute inset-0 bg-transparent group-hover:bg-blue-600/5 transition-colors" />
                 </div>
-                {/* Wireframe content */}
-                <div className="space-y-1.5">
-                  <div className="h-2.5 bg-white/50 rounded w-4/5" />
-                  <div className="h-2 bg-white/30 rounded w-3/5" />
-                  <div className="h-5 bg-white/70 rounded w-2/5 mt-2" />
+              ) : (
+                <div className={`h-36 bg-gradient-to-br ${t.gradient} p-4 flex flex-col justify-between relative overflow-hidden`}>
+                  <div className="flex gap-1 mb-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="h-2.5 bg-white/50 rounded w-4/5" />
+                    <div className="h-2 bg-white/30 rounded w-3/5" />
+                    <div className="h-5 bg-white/70 rounded w-2/5 mt-2" />
+                  </div>
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg">
+                    {t.icon}
+                  </div>
                 </div>
-                {/* Category icon */}
-                <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg">
-                  {t.icon}
-                </div>
-              </div>
+              )}
 
               {/* Card info */}
               <div className="p-4 space-y-3">
@@ -141,9 +163,9 @@ export default function TemplatePlatform() {
                   >
                     {t.tag}
                   </Badge>
-                  {i === 0 ? (
+                  {t.link ? (
                     <Link
-                      href="/templates/khoa-hoc"
+                      href={t.link}
                       className="text-xs text-blue-600 font-semibold hover:underline"
                     >
                       Xem Demo →
