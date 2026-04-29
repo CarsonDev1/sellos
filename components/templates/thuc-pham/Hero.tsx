@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 
 const STATS = [
   { value: "500+", label: "Sản phẩm hữu cơ" },
