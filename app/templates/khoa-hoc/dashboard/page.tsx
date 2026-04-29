@@ -748,129 +748,142 @@ export default function DashboardPage() {
 
   function renderSettings() {
     return (
-      <div className="space-y-8 max-w-2xl">
+      <div className="space-y-6">
         <div>
           <h1 className="font-heading text-2xl font-bold text-slate-900">Cài Đặt Tài Khoản</h1>
           <p className="text-slate-500 text-sm mt-0.5">Quản lý thông tin cá nhân và tùy chọn của bạn</p>
         </div>
 
-        {/* Profile */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
-          <div className="flex items-center justify-between">
-            <h2 className="font-heading font-bold text-slate-900 text-base">Thông Tin Cá Nhân</h2>
-            <button
-              onClick={() => setProfileEditing((v) => !v)}
-              className={cn("text-sm font-semibold px-4 py-1.5 rounded-xl transition-colors", profileEditing ? "bg-blue-600 text-white hover:bg-blue-700" : "border border-slate-200 text-slate-600 hover:bg-slate-50")}
-            >
-              {profileEditing ? "💾 Lưu" : "✏️ Chỉnh sửa"}
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl">A</div>
-              {profileEditing && (
-                <button className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs hover:bg-blue-700">+</button>
-              )}
-            </div>
-            <div>
-              <p className="font-semibold text-slate-900 text-sm">Nguyễn Văn A</p>
-              <p className="text-slate-400 text-xs">Học viên · Tham gia tháng 4/2025</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              { label: "Họ và tên",    value: "Nguyễn Văn A",              type: "text",  readonly: false },
-              { label: "Email",        value: "nguyenvana@email.com",       type: "email", readonly: true  },
-              { label: "Số điện thoại", value: "09xx xxx xxx",             type: "tel",   readonly: false },
-              { label: "Múi giờ",      value: "Asia/Ho_Chi_Minh (GMT+7)", type: "text",  readonly: false },
-            ].map((f, i) => (
-              <div key={i}>
-                <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">{f.label}</label>
-                <input
-                  type={f.type}
-                  defaultValue={f.value}
-                  readOnly={!profileEditing || f.readonly}
-                  className={cn("w-full border rounded-xl px-3.5 py-2.5 text-sm transition-all",
-                    profileEditing && !f.readonly
-                      ? "border-blue-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
-                      : "border-slate-100 bg-slate-50 text-slate-600 cursor-default"
-                  )}
-                />
-              </div>
-            ))}
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Giới thiệu bản thân</label>
-            <textarea
-              rows={3}
-              readOnly={!profileEditing}
-              defaultValue="Đang học bán hàng online để tự do tài chính."
-              className={cn("w-full border rounded-xl px-3.5 py-2.5 text-sm transition-all resize-none",
-                profileEditing
-                  ? "border-blue-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
-                  : "border-slate-100 bg-slate-50 text-slate-600 cursor-default"
-              )}
-            />
-          </div>
-        </div>
-
-        {/* Notifications */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-          <h2 className="font-heading font-bold text-slate-900 text-base">Thông Báo</h2>
-          {([
-            { key: "emailReminder", label: "Nhắc nhở học tập",     desc: "Nhận email nhắc khi bạn chưa học trong 2 ngày" },
-            { key: "courseUpdates", label: "Cập nhật khóa học",     desc: "Thông báo khi khóa học có nội dung mới" },
-            { key: "weeklyReport",  label: "Báo cáo tuần",          desc: "Tóm tắt tiến độ gửi mỗi thứ Hai hàng tuần" },
-            { key: "promotions",    label: "Khuyến mãi & ưu đãi",  desc: "Thông báo về chương trình giảm giá khóa học" },
-          ] as const).map((item) => (
-            <div key={item.key} className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-slate-900">{item.label}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{item.desc}</p>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          {/* LEFT — Profile */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
+            <div className="flex items-center justify-between">
+              <h2 className="font-heading font-bold text-slate-900 text-base">Thông Tin Cá Nhân</h2>
               <button
-                onClick={() => setNotifSettings((prev) => ({ ...prev, [item.key]: !prev[item.key] }))}
-                className={cn("relative w-11 h-6 rounded-full transition-colors flex-shrink-0", notifSettings[item.key] ? "bg-blue-600" : "bg-slate-200")}
+                onClick={() => setProfileEditing((v) => !v)}
+                className={cn("text-sm font-semibold px-4 py-1.5 rounded-xl transition-colors", profileEditing ? "bg-blue-600 text-white hover:bg-blue-700" : "border border-slate-200 text-slate-600 hover:bg-slate-50")}
               >
-                <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform", notifSettings[item.key] ? "translate-x-5" : "translate-x-0.5")} />
+                {profileEditing ? "💾 Lưu" : "✏️ Chỉnh sửa"}
               </button>
             </div>
-          ))}
-        </div>
-
-        {/* Security */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
-          <h2 className="font-heading font-bold text-slate-900 text-base">Bảo Mật</h2>
-          <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
-            <div>
-              <p className="text-sm font-semibold text-slate-900">Mật khẩu</p>
-              <p className="text-xs text-slate-400">Lần đổi cuối: 5 ngày trước</p>
-            </div>
-            <button className="text-sm font-semibold text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">Đổi mật khẩu</button>
-          </div>
-          <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100">
-            <div>
-              <p className="text-sm font-semibold text-slate-900">Xác thực 2 bước (2FA)</p>
-              <p className="text-xs text-slate-400">Bảo vệ tài khoản của bạn</p>
-            </div>
-            <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full">Sắp ra mắt</span>
-          </div>
-        </div>
-
-        {/* Subscription */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h2 className="font-heading font-bold text-slate-900 text-base">Gói Đăng Ký</h2>
-              <div className="mt-1 flex items-center gap-2 flex-wrap">
-                <span className="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">Gói Basic</span>
-                <span className="text-slate-500 text-sm">· Học trọn đời</span>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl">A</div>
+                {profileEditing && (
+                  <button className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs hover:bg-blue-700">+</button>
+                )}
               </div>
-              <p className="text-slate-400 text-xs mt-1">Kích hoạt: 20/04/2025 · 2 khóa học</p>
+              <div>
+                <p className="font-semibold text-slate-900 text-sm">Nguyễn Văn A</p>
+                <p className="text-slate-400 text-xs">Học viên · Tham gia tháng 4/2025</p>
+              </div>
             </div>
-            <Link href="/templates/khoa-hoc" className="text-sm font-semibold text-blue-600 hover:text-blue-700 bg-white border border-blue-200 px-4 py-2 rounded-xl hover:shadow-sm transition-all flex-shrink-0">
-              Nâng cấp VIP →
-            </Link>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: "Họ và tên",     value: "Nguyễn Văn A",              type: "text",  readonly: false },
+                { label: "Email",         value: "nguyenvana@email.com",       type: "email", readonly: true  },
+                { label: "Số điện thoại", value: "09xx xxx xxx",               type: "tel",   readonly: false },
+                { label: "Múi giờ",       value: "Asia/Ho_Chi_Minh (GMT+7)",  type: "text",  readonly: false },
+              ].map((f, i) => (
+                <div key={i}>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">{f.label}</label>
+                  <input
+                    type={f.type}
+                    defaultValue={f.value}
+                    readOnly={!profileEditing || f.readonly}
+                    className={cn("w-full border rounded-xl px-3.5 py-2.5 text-sm transition-all",
+                      profileEditing && !f.readonly
+                        ? "border-blue-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                        : "border-slate-100 bg-slate-50 text-slate-600 cursor-default"
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Giới thiệu bản thân</label>
+              <textarea
+                rows={3}
+                readOnly={!profileEditing}
+                defaultValue="Đang học bán hàng online để tự do tài chính."
+                className={cn("w-full border rounded-xl px-3.5 py-2.5 text-sm transition-all resize-none",
+                  profileEditing
+                    ? "border-blue-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                    : "border-slate-100 bg-slate-50 text-slate-600 cursor-default"
+                )}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT — Notifications + Security + Subscription */}
+          <div className="space-y-6">
+            {/* Notifications */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+              <h2 className="font-heading font-bold text-slate-900 text-base">Thông Báo</h2>
+              {([
+                { key: "emailReminder", label: "Nhắc nhở học tập",    desc: "Nhận email nhắc khi bạn chưa học trong 2 ngày" },
+                { key: "courseUpdates", label: "Cập nhật khóa học",    desc: "Thông báo khi khóa học có nội dung mới" },
+                { key: "weeklyReport",  label: "Báo cáo tuần",         desc: "Tóm tắt tiến độ gửi mỗi thứ Hai hàng tuần" },
+                { key: "promotions",    label: "Khuyến mãi & ưu đãi", desc: "Thông báo về chương trình giảm giá khóa học" },
+              ] as const).map((item) => (
+                <div key={item.key} className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-900">{item.label}</p>
+                    <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{item.desc}</p>
+                  </div>
+                  <button
+                    role="switch"
+                    aria-checked={notifSettings[item.key]}
+                    onClick={() => setNotifSettings((prev) => ({ ...prev, [item.key]: !prev[item.key] }))}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none",
+                      notifSettings[item.key] ? "bg-blue-600" : "bg-slate-200"
+                    )}
+                  >
+                    <span className={cn(
+                      "inline-block h-5 w-5 rounded-full bg-white shadow-md transition-transform duration-200",
+                      notifSettings[item.key] ? "translate-x-5" : "translate-x-0"
+                    )} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Security */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
+              <h2 className="font-heading font-bold text-slate-900 text-base">Bảo Mật</h2>
+              <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Mật khẩu</p>
+                  <p className="text-xs text-slate-400">Lần đổi cuối: 5 ngày trước</p>
+                </div>
+                <button className="text-sm font-semibold text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors">Đổi mật khẩu</button>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Xác thực 2 bước (2FA)</p>
+                  <p className="text-xs text-slate-400">Bảo vệ tài khoản của bạn</p>
+                </div>
+                <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full">Sắp ra mắt</span>
+              </div>
+            </div>
+
+            {/* Subscription */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="font-heading font-bold text-slate-900 text-base">Gói Đăng Ký</h2>
+                  <div className="mt-1 flex items-center gap-2 flex-wrap">
+                    <span className="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">Gói Basic</span>
+                    <span className="text-slate-500 text-sm">· Học trọn đời</span>
+                  </div>
+                  <p className="text-slate-400 text-xs mt-1">Kích hoạt: 20/04/2025 · 2 khóa học</p>
+                </div>
+                <Link href="/templates/khoa-hoc" className="text-sm font-semibold text-blue-600 hover:text-blue-700 bg-white border border-blue-200 px-4 py-2 rounded-xl hover:shadow-sm transition-all flex-shrink-0">
+                  Nâng cấp VIP →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
