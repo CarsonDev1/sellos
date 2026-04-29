@@ -57,8 +57,8 @@ export default function PlatformNavbar({ isLoggedIn = false }: PlatformNavbarPro
           <nav className="hidden lg:flex items-center gap-1 text-sm">
             {[
               { label: "Khóa học", href: "/templates/khoa-hoc" },
-              { label: "Giảng viên", href: "#" },
-              { label: "Blog", href: "#" },
+              { label: "Giảng viên", href: "/templates/khoa-hoc/giang-vien" },
+              { label: "Blog", href: "/templates/khoa-hoc/blog" },
             ].map((item) => (
               <Link
                 key={item.label}
@@ -142,8 +142,8 @@ export default function PlatformNavbar({ isLoggedIn = false }: PlatformNavbarPro
               </div>
               {[
                 { label: "Khóa học", href: "/templates/khoa-hoc" },
-                { label: "Giảng viên", href: "#" },
-                { label: "Blog", href: "#" },
+                { label: "Giảng viên", href: "/templates/khoa-hoc/giang-vien" },
+                { label: "Blog", href: "/templates/khoa-hoc/blog" },
               ].map((item) => (
                 <Link
                   key={item.label}
