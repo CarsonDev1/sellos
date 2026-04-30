@@ -63,8 +63,8 @@ const TEMPLATES = [
     gradient: "from-green-500 to-lime-600",
     tag: "Mới nhất",
     tagColor: "border-green-200 text-green-700 bg-green-50",
-    previewUrl: null,
-    link: null,
+    previewUrl: "/templates/thuc-pham",
+    link: "/templates/thuc-pham",
   },
 ];
 
