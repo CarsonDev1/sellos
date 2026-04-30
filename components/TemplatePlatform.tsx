@@ -43,8 +43,8 @@ const TEMPLATES = [
     gradient: "from-amber-500 to-orange-600",
     tag: "Mới nhất",
     tagColor: "border-amber-200 text-amber-700 bg-amber-50",
-    previewUrl: null,
-    link: null,
+    previewUrl: "/templates/coaching",
+    link: "/templates/coaching",
   },
   {
     icon: "🎉",
