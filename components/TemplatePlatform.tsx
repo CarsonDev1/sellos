@@ -23,8 +23,8 @@ const TEMPLATES = [
     gradient: "from-rose-500 to-pink-600",
     tag: "Mới nhất",
     tagColor: "border-rose-200 text-rose-700 bg-rose-50",
-    previewUrl: null,
-    link: null,
+    previewUrl: "/templates/shop-online",
+    link: "/templates/shop-online",
   },
   {
     icon: "💼",
