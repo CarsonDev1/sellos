@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro, Mulish, JetBrains_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { viVN } from "@clerk/localizations";
 import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -48,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={viVN}>
       <html
         lang="vi"
         className={`${beVietnamPro.variable} ${mulish.variable} ${jetbrainsMono.variable}`}
