@@ -1,91 +1,108 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const CATEGORIES = [
-  {
-    name: "Áo Nữ",
-    count: "120+ mẫu",
-    href: "#san-pham-moi",
-    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80",
-    gradient: "from-rose-600/60 to-pink-700/40",
-  },
-  {
-    name: "Quần & Váy",
-    count: "80+ mẫu",
-    href: "#san-pham-moi",
-    image: "https://images.unsplash.com/photo-1594938298603-c8148c4b4357?auto=format&fit=crop&w=600&q=80",
-    gradient: "from-slate-800/60 to-slate-900/40",
-  },
-  {
-    name: "Phụ Kiện",
-    count: "200+ mẫu",
-    href: "#san-pham-moi",
-    image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=600&q=80",
-    gradient: "from-amber-700/60 to-orange-800/40",
-  },
-  {
-    name: "Sale -50%",
-    count: "Hàng trăm mẫu",
-    href: "#sale",
-    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=600&q=80",
-    gradient: "from-rose-700/70 to-pink-800/50",
-    isHot: true,
-  },
-];
+import Link from "next/link";
 
 export default function ShopCategories() {
   return (
-    <section id="danh-muc" className="py-20 px-4 bg-white">
+    <section className="py-10 px-4 bg-white">
       <div className="container mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10"
-        >
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
-            Khám Phá Danh Mục
-          </h2>
-          <p className="text-slate-500 text-base max-w-lg mx-auto">
-            Từ áo đến phụ kiện — tất cả những gì bạn cần để mix&match phong cách riêng.
-          </p>
-        </motion.div>
+        {/* Section title */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-heading font-bold text-slate-900 text-xl">Danh Mục</h2>
+          <Link href="/templates/shop-online/danh-muc/ao" className="text-sm text-rose-600 font-semibold hover:underline">Xem tất cả →</Link>
+        </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {CATEGORIES.map((cat, i) => (
-            <motion.a
-              key={cat.name}
-              href={cat.href}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+        {/* 5-col icon categories */}
+        <div className="grid grid-cols-5 gap-3 mb-10">
+          {[
+            { label: "Áo Nữ", href: "/templates/shop-online/danh-muc/ao", emoji: "👕", bg: "bg-rose-50 hover:bg-rose-100" },
+            { label: "Quần & Váy", href: "/templates/shop-online/danh-muc/quan", emoji: "👗", bg: "bg-pink-50 hover:bg-pink-100" },
+            { label: "Phụ Kiện", href: "/templates/shop-online/danh-muc/phu-kien", emoji: "👜", bg: "bg-amber-50 hover:bg-amber-100" },
+            { label: "Giày Dép", href: "/templates/shop-online/danh-muc/giay", emoji: "👠", bg: "bg-violet-50 hover:bg-violet-100" },
+            { label: "Sale 🔥", href: "/templates/shop-online/sale", emoji: "🏷️", bg: "bg-red-50 hover:bg-red-100" },
+          ].map((cat, i) => (
+            <motion.div key={cat.label} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+              <Link
+                href={cat.href}
+                className={`flex flex-col items-center gap-2 py-4 rounded-2xl ${cat.bg} transition-colors group`}
+              >
+                <span className="text-2xl sm:text-3xl">{cat.emoji}</span>
+                <span className="text-xs sm:text-sm font-semibold text-slate-700 text-center leading-tight">{cat.label}</span>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Large promo grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          {/* Main hero promo */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="md:col-span-7 relative rounded-3xl overflow-hidden h-64 sm:h-80 group"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=900&q=80"
+              alt=""
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900/65 to-transparent" />
+            <div className="absolute bottom-0 left-0 p-6">
+              <span className="text-rose-300 text-xs font-bold uppercase tracking-widest">Áo Nữ Mùa Hè</span>
+              <h3 className="font-heading font-black text-white text-2xl sm:text-3xl mt-1 leading-tight">Linen &<br />Cotton Shirts</h3>
+              <Link
+                href="/templates/shop-online/danh-muc/ao"
+                className="inline-flex items-center gap-2 mt-3 bg-white text-slate-900 hover:bg-rose-50 text-sm font-bold px-5 py-2.5 rounded-xl transition-colors"
+              >
+                Shop now →
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* 2 small promos stacked */}
+          <div className="md:col-span-5 flex flex-col gap-4">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="relative rounded-2xl overflow-hidden aspect-[3/4] group cursor-pointer block"
+              transition={{ delay: 0.1 }}
+              className="relative rounded-3xl overflow-hidden h-[145px] sm:h-[150px] group"
             >
               <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=80"
+                alt=""
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className={`absolute inset-0 bg-gradient-to-t ${cat.gradient} transition-opacity group-hover:opacity-80`} />
-
-              {cat.isHot && (
-                <span className="absolute top-3 left-3 bg-rose-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-                  🔥 HOT
-                </span>
-              )}
-
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <p className="font-heading font-bold text-white text-lg leading-tight">{cat.name}</p>
-                <p className="text-white/70 text-xs mt-0.5">{cat.count}</p>
-                <span className="inline-flex items-center gap-1 mt-2 text-white text-xs font-semibold bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full group-hover:bg-white/30 transition-colors">
-                  Xem tất cả →
-                </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-rose-900/70 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-4 sm:p-5">
+                <span className="text-rose-200 text-[10px] font-bold uppercase tracking-wider">Giày & Dép</span>
+                <h3 className="font-heading font-black text-white text-lg sm:text-xl">Sneakers<br />& Loafers</h3>
+                <Link href="/templates/shop-online/danh-muc/giay" className="text-white/80 text-xs font-semibold hover:text-white transition-colors">Xem ngay →</Link>
               </div>
-            </motion.a>
-          ))}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="relative rounded-3xl overflow-hidden h-[145px] sm:h-[150px] group"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=700&q=80"
+                alt=""
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-900/70 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-4 sm:p-5">
+                <span className="text-amber-200 text-[10px] font-bold uppercase tracking-wider">Túi & Phụ Kiện</span>
+                <h3 className="font-heading font-black text-white text-lg sm:text-xl">Bags &<br />Accessories</h3>
+                <Link href="/templates/shop-online/danh-muc/phu-kien" className="text-white/80 text-xs font-semibold hover:text-white transition-colors">Xem ngay →</Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
