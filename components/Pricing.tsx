@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -11,6 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SignUpButton, useAuth } from "@clerk/nextjs";
+import Link from "next/link";
 
 const KIT_FEATURES = [
   "Truy cập AI chat tích hợp trên SellOS",
@@ -29,6 +30,8 @@ const PRO_EXTRAS = [
 ];
 
 export default function Pricing() {
+  const { isSignedIn } = useAuth();
+
   return (
     <section id="pricing" className="py-24 px-4 bg-slate-50">
       <div className="container mx-auto max-w-5xl">
@@ -83,14 +86,17 @@ export default function Pricing() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="w-full border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 h-12 font-semibold"
-                >
-                  <Link href="#final-cta">Bắt Đầu Ngay</Link>
-                </Button>
+                {isSignedIn ? (
+                  <Button asChild variant="outline" size="lg" className="w-full border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 h-12 font-semibold">
+                    <Link href="/dashboard">Vào Dashboard</Link>
+                  </Button>
+                ) : (
+                  <SignUpButton mode="modal">
+                    <Button variant="outline" size="lg" className="w-full border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 h-12 font-semibold">
+                      Bắt Đầu Ngay
+                    </Button>
+                  </SignUpButton>
+                )}
               </CardFooter>
             </Card>
           </motion.div>
@@ -152,13 +158,17 @@ export default function Pricing() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 shadow-md shadow-blue-200"
-                >
-                  <Link href="#final-cta">Bắt Đầu Với Pro</Link>
-                </Button>
+                {isSignedIn ? (
+                  <Button asChild size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 shadow-md shadow-blue-200">
+                    <Link href="/dashboard">Vào Dashboard</Link>
+                  </Button>
+                ) : (
+                  <SignUpButton mode="modal">
+                    <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 shadow-md shadow-blue-200">
+                      Bắt Đầu Với Pro
+                    </Button>
+                  </SignUpButton>
+                )}
               </CardFooter>
             </Card>
           </motion.div>

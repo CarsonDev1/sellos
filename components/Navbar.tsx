@@ -8,7 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
+import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 
 const NAV_LINKS = [
   { href: "#how-it-works", label: "Cách hoạt động" },
@@ -77,11 +77,9 @@ export default function Navbar() {
                     Đăng nhập
                   </Button>
                 </SignInButton>
-                <SignUpButton mode="modal">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-                    Bắt Đầu Ngay
-                  </Button>
-                </SignUpButton>
+                <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                  <Link href="#pricing">Bắt Đầu Ngay</Link>
+                </Button>
               </>
             )}
           </div>
@@ -98,18 +96,11 @@ export default function Navbar() {
                 <span className="w-5 h-0.5 bg-slate-700 block" />
               </button>
             </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="bg-white border-slate-200 w-72"
-            >
+            <SheetContent side="right" className="bg-white border-slate-200 w-72">
               <div className="flex flex-col gap-8 pt-8">
                 <Link href="/" className="flex flex-col leading-none">
-                  <span className="font-heading font-bold text-2xl text-slate-900">
-                    SellOS
-                  </span>
-                  <span className="text-xs text-slate-400 mt-0.5">
-                    Nền Tảng Bán Hàng Tự Động
-                  </span>
+                  <span className="font-heading font-bold text-2xl text-slate-900">SellOS</span>
+                  <span className="text-xs text-slate-400 mt-0.5">Nền Tảng Bán Hàng Tự Động</span>
                 </Link>
                 <nav className="flex flex-col gap-3">
                   {NAV_LINKS.map((link) => (
@@ -140,11 +131,9 @@ export default function Navbar() {
                         Đăng nhập
                       </Button>
                     </SignInButton>
-                    <SignUpButton mode="modal">
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" onClick={() => setOpen(false)}>
-                        Bắt Đầu Ngay
-                      </Button>
-                    </SignUpButton>
+                    <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" onClick={() => setOpen(false)}>
+                      <Link href="#pricing">Bắt Đầu Ngay</Link>
+                    </Button>
                   </div>
                 )}
               </div>
