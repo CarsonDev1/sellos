@@ -8,6 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
 
 const NAV_LINKS = [
   { href: "#how-it-works", label: "Cách hoạt động" },
@@ -19,6 +20,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -60,13 +62,28 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:block">
-            <Button
-              asChild
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-            >
-              <Link href="#pricing">Bắt Đầu Ngay</Link>
-            </Button>
+          <div className="hidden md:flex items-center gap-3">
+            {isSignedIn ? (
+              <>
+                <Button asChild variant="ghost" className="text-slate-600 font-medium">
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <UserButton />
+              </>
+            ) : (
+              <>
+                <SignInButton mode="modal">
+                  <Button variant="ghost" className="text-slate-600 font-medium">
+                    Đăng nhập
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                    Bắt Đầu Ngay
+                  </Button>
+                </SignUpButton>
+              </>
+            )}
           </div>
 
           {/* Mobile menu */}
@@ -106,13 +123,30 @@ export default function Navbar() {
                     </Link>
                   ))}
                 </nav>
-                <Button
-                  asChild
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                  onClick={() => setOpen(false)}
-                >
-                  <Link href="#pricing">Bắt Đầu Ngay</Link>
-                </Button>
+                {isSignedIn ? (
+                  <div className="flex flex-col gap-3">
+                    <Button asChild onClick={() => setOpen(false)}>
+                      <Link href="/dashboard">Dashboard</Link>
+                    </Button>
+                    <div className="flex items-center gap-3">
+                      <UserButton />
+                      <span className="text-sm text-slate-600">Tài khoản</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <SignInButton mode="modal">
+                      <Button variant="outline" className="w-full" onClick={() => setOpen(false)}>
+                        Đăng nhập
+                      </Button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" onClick={() => setOpen(false)}>
+                        Bắt Đầu Ngay
+                      </Button>
+                    </SignUpButton>
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>
