@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/supabase/profile";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export const metadata = { title: "Admin — SellOS" };
 
@@ -10,7 +10,7 @@ export default async function AdminPage() {
   if (!userId) redirect("/sign-in");
   if (!(await isAdmin(userId))) redirect("/dashboard");
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const [{ data: profiles }, { data: businessInfos }, { data: projects }] = await Promise.all([
     supabase.from("profiles").select("*").order("created_at", { ascending: false }),

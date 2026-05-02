@@ -1,5 +1,13 @@
-import { createClient } from "./server";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
+
+function getAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  return createSupabaseClient<Database>(url, serviceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -10,9 +18,10 @@ export async function syncProfile(clerkUser: {
   lastName: string | null;
   imageUrl: string;
 }): Promise<Profile | null> {
-  const supabase = await createClient();
+  const supabase = getAdminClient();
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
-  const fullName = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null;
+  const fullName =
+    [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null;
 
   const { data, error } = await supabase
     .from("profiles")
@@ -29,20 +38,21 @@ export async function syncProfile(clerkUser: {
     .single();
 
   if (error) {
-    console.error("syncProfile error:", error.message);
+    console.error("[syncProfile]", error.message);
     return null;
   }
   return data;
 }
 
 export async function getProfile(clerkId: string): Promise<Profile | null> {
-  const supabase = await createClient();
-  const { data } = await supabase
+  const supabase = getAdminClient();
+  const { data, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("clerk_id", clerkId)
     .single();
-  return data;
+  if (error) console.error("[getProfile]", error.message);
+  return data ?? null;
 }
 
 export async function isAdmin(clerkId: string): Promise<boolean> {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { saveBusinessInfo, saveProducts } from "./actions";
 import type { Database } from "@/lib/supabase/types";
 
 type BusinessInfo = Database["public"]["Tables"]["business_info"]["Row"];
@@ -31,13 +31,12 @@ interface Props {
   initialProducts: Product[];
 }
 
-export default function ThongTinForm({ profileId, initialBusiness, initialProducts }: Props) {
-  const supabase = createClient();
+export default function ThongTinForm({ initialBusiness, initialProducts }: Props) {
   const [step, setStep] = useState<"business" | "product">("business");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Business form state
   const [business, setBusiness] = useState({
     brand_name: initialBusiness?.brand_name ?? "",
     business_type: initialBusiness?.business_type ?? "",
@@ -46,37 +45,38 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
     website: initialBusiness?.website ?? "",
   });
 
-  // Product form state
   const [products, setProducts] = useState<Partial<Product>[]>(
     initialProducts.length > 0
       ? initialProducts
       : [{ name: "", description: "", price: undefined, usp: "", target_audience: "", sales_channels: [] }]
   );
 
-  async function saveBusiness() {
+  async function handleSaveBusiness() {
     if (!business.brand_name || !business.business_type) return;
     setSaving(true);
-    await supabase.from("business_info").upsert(
-      { ...business, user_id: profileId, business_type: business.business_type as BusinessInfo["business_type"] },
-      { onConflict: "user_id" }
-    );
+    setError(null);
+    const res = await saveBusinessInfo(business);
     setSaving(false);
+    if (res.error) { setError(res.error); return; }
     setStep("product");
   }
 
-  async function saveProducts() {
+  async function handleSaveProducts() {
     setSaving(true);
-    for (const p of products) {
-      if (!p.name) continue;
-      if (p.id) {
-        await supabase.from("products").update({ ...p }).eq("id", p.id);
-      } else {
-        await supabase.from("products").insert({ ...p, user_id: profileId, sales_channels: p.sales_channels ?? [] } as Product);
-      }
-    }
-    // Mark onboarding done
-    await supabase.from("profiles").update({ onboarding_done: true }).eq("id", profileId);
+    setError(null);
+    const res = await saveProducts(
+      products.map((p) => ({
+        id: p.id,
+        name: p.name ?? "",
+        description: p.description ?? "",
+        price: p.price ?? null,
+        usp: p.usp ?? "",
+        target_audience: p.target_audience ?? "",
+        sales_channels: p.sales_channels ?? [],
+      }))
+    );
     setSaving(false);
+    if (res.error) { setError(res.error); return; }
     setSaved(true);
   }
 
@@ -86,7 +86,9 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
 
   function toggleChannel(index: number, channel: string) {
     const current = products[index].sales_channels ?? [];
-    const next = current.includes(channel) ? current.filter((c) => c !== channel) : [...current, channel];
+    const next = current.includes(channel)
+      ? current.filter((c) => c !== channel)
+      : [...current, channel];
     updateProduct(index, "sales_channels", next);
   }
 
@@ -109,7 +111,6 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
-      {/* Header */}
       <div>
         <h1 className="font-heading font-bold text-2xl text-slate-900">Thông tin & Sản phẩm</h1>
         <p className="text-slate-500 mt-1">Điền đầy đủ để AI tư vấn chính xác nhất cho doanh nghiệp của bạn.</p>
@@ -120,7 +121,11 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
         {(["business", "product"] as const).map((s, i) => (
           <div key={s} className="flex items-center gap-3">
             <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-              step === s ? "bg-blue-600 text-white" : i < (step === "product" ? 1 : 0) ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-400"
+              step === s
+                ? "bg-blue-600 text-white"
+                : i === 0 && step === "product"
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-slate-100 text-slate-400"
             }`}>
               <span>{i + 1}</span>
               <span>{s === "business" ? "Doanh nghiệp" : "Sản phẩm"}</span>
@@ -130,7 +135,13 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
         ))}
       </div>
 
-      {/* Step 1: Business Info */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Step 1: Business */}
       {step === "business" && (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5">
           <h2 className="font-semibold text-slate-900 text-lg">Thông tin doanh nghiệp</h2>
@@ -167,9 +178,9 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Mô tả ngắn về doanh nghiệp</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Mô tả ngắn</label>
             <textarea
-              value={business.description ?? ""}
+              value={business.description}
               onChange={(e) => setBusiness({ ...business, description: e.target.value })}
               placeholder="VD: Bán thời trang nữ cao cấp, chuyên áo đầm và phụ kiện..."
               rows={3}
@@ -182,7 +193,7 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Số điện thoại</label>
               <input
                 type="tel"
-                value={business.phone ?? ""}
+                value={business.phone}
                 onChange={(e) => setBusiness({ ...business, phone: e.target.value })}
                 placeholder="0901234567"
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
@@ -192,7 +203,7 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Website</label>
               <input
                 type="url"
-                value={business.website ?? ""}
+                value={business.website}
                 onChange={(e) => setBusiness({ ...business, website: e.target.value })}
                 placeholder="https://..."
                 className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
@@ -201,7 +212,7 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
           </div>
 
           <button
-            onClick={saveBusiness}
+            onClick={handleSaveBusiness}
             disabled={!business.brand_name || !business.business_type || saving}
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold rounded-xl transition-colors"
           >
@@ -210,7 +221,7 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
         </div>
       )}
 
-      {/* Step 2: Product Info */}
+      {/* Step 2: Products */}
       {step === "product" && (
         <div className="space-y-4">
           {products.map((product, index) => (
@@ -321,7 +332,7 @@ export default function ThongTinForm({ profileId, initialBusiness, initialProduc
               ← Quay lại
             </button>
             <button
-              onClick={saveProducts}
+              onClick={handleSaveProducts}
               disabled={products.every((p) => !p.name) || saving}
               className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold rounded-xl transition-colors"
             >
