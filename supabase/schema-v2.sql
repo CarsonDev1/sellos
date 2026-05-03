@@ -126,7 +126,7 @@ create policy "owner manages project_products" on project_products
 -- Public read cho products của published projects
 create policy "public reads published products" on project_products
   for select using (
-    project_id in (select id from projects where published = true)
+    project_id in (select projects.id from projects where projects.published = true)
   );
 
 -- project_orders
@@ -142,7 +142,7 @@ create policy "owner manages orders" on project_orders
 -- Public insert orders (khách đặt hàng)
 create policy "public inserts orders" on project_orders
   for insert with check (
-    project_id in (select id from projects where published = true)
+    project_id in (select projects.id from projects where projects.published = true)
   );
 
 -- project_bookings
@@ -157,7 +157,7 @@ create policy "owner manages bookings" on project_bookings
 
 create policy "public inserts bookings" on project_bookings
   for insert with check (
-    project_id in (select id from projects where published = true)
+    project_id in (select projects.id from projects where projects.published = true)
   );
 
 -- project_testimonials
@@ -172,5 +172,5 @@ create policy "owner manages testimonials" on project_testimonials
 
 create policy "public reads testimonials" on project_testimonials
   for select using (
-    project_id in (select id from projects where published = true)
+    project_id in (select projects.id from projects where projects.published = true)
   );
