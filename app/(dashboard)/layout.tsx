@@ -3,6 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { syncProfile, isAdmin } from "@/lib/supabase/profile";
+import GenerationToast from "@/components/dashboard/GenerationToast";
 
 const SIDEBAR_LINKS = [
   {
@@ -156,6 +157,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {children}
         </main>
       </div>
+
+      <GenerationToast />
     </div>
   );
 }
