@@ -117,7 +117,7 @@ alter table project_testimonials enable row level security;
 create policy "owner manages project_products" on project_products
   for all using (
     project_id in (
-      select id from projects p
+      select p.id from projects p
       join profiles pr on pr.id = p.user_id
       where pr.clerk_id = current_setting('app.clerk_user_id', true)
     )
@@ -133,7 +133,7 @@ create policy "public reads published products" on project_products
 create policy "owner manages orders" on project_orders
   for all using (
     project_id in (
-      select id from projects p
+      select p.id from projects p
       join profiles pr on pr.id = p.user_id
       where pr.clerk_id = current_setting('app.clerk_user_id', true)
     )
@@ -149,7 +149,7 @@ create policy "public inserts orders" on project_orders
 create policy "owner manages bookings" on project_bookings
   for all using (
     project_id in (
-      select id from projects p
+      select p.id from projects p
       join profiles pr on pr.id = p.user_id
       where pr.clerk_id = current_setting('app.clerk_user_id', true)
     )
@@ -164,7 +164,7 @@ create policy "public inserts bookings" on project_bookings
 create policy "owner manages testimonials" on project_testimonials
   for all using (
     project_id in (
-      select id from projects p
+      select p.id from projects p
       join profiles pr on pr.id = p.user_id
       where pr.clerk_id = current_setting('app.clerk_user_id', true)
     )
