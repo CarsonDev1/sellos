@@ -18,7 +18,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (!project || project.user_id !== profile.id) notFound();
 
   const tpl = getTemplate(project.template_id ?? "");
-  const stats = project.template_id ? await getProjectStats(id, project.template_id) : null;
 
-  return <ProjectOverviewClient project={project} tpl={tpl ?? null} stats={stats} />;
+  let stats = null;
+  try {
+    stats = project.template_id ? await getProjectStats(id, project.template_id) : null;
+  } catch {
+    // stats are non-critical; render page without them
+  }
+
+  // Strip generated_content — it's large and not needed in the admin overview
+  const { generated_content: _gc, ...projectSafe } = project as typeof project & { generated_content?: unknown };
+
+  return <ProjectOverviewClient project={projectSafe as typeof project} tpl={tpl ?? null} stats={stats} />;
 }

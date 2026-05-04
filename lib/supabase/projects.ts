@@ -226,49 +226,54 @@ export async function updateBookingStatus(
 // ── Stats ─────────────────────────────────────────────────────
 
 export async function getProjectStats(projectId: string, templateId: string) {
-  const now = new Date();
-  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
-  const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
+  try {
+    const now = new Date();
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString();
 
-  if (templateId === "coaching") {
-    const [allBookings, thisMonth, lastMonth, confirmed] = await Promise.all([
-      admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId),
-      admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId).gte("created_at", thisMonthStart),
-      admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId).gte("created_at", lastMonthStart).lte("created_at", lastMonthEnd),
-      admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId).eq("status", "confirmed"),
+    if (templateId === "coaching") {
+      const [allBookings, thisMonth, lastMonth, confirmed] = await Promise.all([
+        admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId),
+        admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId).gte("created_at", thisMonthStart),
+        admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId).gte("created_at", lastMonthStart).lte("created_at", lastMonthEnd),
+        admin().from("project_bookings").select("id", { count: "exact" }).eq("project_id", projectId).eq("status", "confirmed"),
+      ]);
+      return {
+        type: "coaching" as const,
+        totalBookings: allBookings.count ?? 0,
+        thisMonthBookings: thisMonth.count ?? 0,
+        lastMonthBookings: lastMonth.count ?? 0,
+        confirmedBookings: confirmed.count ?? 0,
+      };
+    }
+
+    const [orders, thisMonthOrders, lastMonthOrders, products] = await Promise.all([
+      admin().from("project_orders").select("total, status").eq("project_id", projectId),
+      admin().from("project_orders").select("total").eq("project_id", projectId).gte("created_at", thisMonthStart).neq("status", "cancelled"),
+      admin().from("project_orders").select("total").eq("project_id", projectId).gte("created_at", lastMonthStart).lte("created_at", lastMonthEnd).neq("status", "cancelled"),
+      admin().from("project_products").select("id", { count: "exact" }).eq("project_id", projectId),
     ]);
+
+    const allOrders = orders.data ?? [];
+    const revenue = allOrders.filter((o) => o.status !== "cancelled").reduce((sum, o) => sum + (o.total ?? 0), 0);
+    const thisMonthRevenue = (thisMonthOrders.data ?? []).reduce((sum, o) => sum + (o.total ?? 0), 0);
+    const lastMonthRevenue = (lastMonthOrders.data ?? []).reduce((sum, o) => sum + (o.total ?? 0), 0);
+    const pendingOrders = allOrders.filter((o) => o.status === "pending").length;
+
     return {
-      type: "coaching" as const,
-      totalBookings: allBookings.count ?? 0,
-      thisMonthBookings: thisMonth.count ?? 0,
-      lastMonthBookings: lastMonth.count ?? 0,
-      confirmedBookings: confirmed.count ?? 0,
+      type: "shop" as const,
+      totalOrders: allOrders.length,
+      revenue,
+      thisMonthRevenue,
+      lastMonthRevenue,
+      pendingOrders,
+      totalProducts: products.count ?? 0,
     };
+  } catch (err) {
+    console.error("[getProjectStats]", err);
+    return null;
   }
-
-  const [orders, thisMonthOrders, lastMonthOrders, products] = await Promise.all([
-    admin().from("project_orders").select("total, status").eq("project_id", projectId),
-    admin().from("project_orders").select("total").eq("project_id", projectId).gte("created_at", thisMonthStart).neq("status", "cancelled"),
-    admin().from("project_orders").select("total").eq("project_id", projectId).gte("created_at", lastMonthStart).lte("created_at", lastMonthEnd).neq("status", "cancelled"),
-    admin().from("project_products").select("id", { count: "exact" }).eq("project_id", projectId),
-  ]);
-
-  const allOrders = orders.data ?? [];
-  const revenue = allOrders.filter((o) => o.status !== "cancelled").reduce((sum, o) => sum + (o.total ?? 0), 0);
-  const thisMonthRevenue = (thisMonthOrders.data ?? []).reduce((sum, o) => sum + (o.total ?? 0), 0);
-  const lastMonthRevenue = (lastMonthOrders.data ?? []).reduce((sum, o) => sum + (o.total ?? 0), 0);
-  const pendingOrders = allOrders.filter((o) => o.status === "pending").length;
-
-  return {
-    type: "shop" as const,
-    totalOrders: allOrders.length,
-    revenue,
-    thisMonthRevenue,
-    lastMonthRevenue,
-    pendingOrders,
-    totalProducts: products.count ?? 0,
-  };
 }
 
 // ── Helpers ───────────────────────────────────────────────────
