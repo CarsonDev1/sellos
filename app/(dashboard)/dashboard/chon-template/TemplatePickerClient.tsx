@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { TEMPLATES } from "@/lib/templates";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 const STORAGE_KEY = "sellos_generating";
 
 export default function TemplatePickerClient({ brandName, businessType }: Props) {
+  const router = useRouter();
   const [selected, setSelected] = useState<string | null>(() => {
     const map: Record<string, string> = {
       "shop-online": "shop-online",
@@ -23,34 +25,70 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const tickerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Resume state if already generating
-  useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    try {
-      const saved = JSON.parse(raw) as { projectId: string; templateId: string; projectName: string };
-      setProjectId(saved.projectId);
-      setLoading(true);
-      setProgress(50);
-    } catch { /* ignore */ }
-  }, []);
-
-  function startProgressTicker(from: number) {
+  function clearTimers() {
     if (tickerRef.current) clearInterval(tickerRef.current);
+    if (pollerRef.current) clearInterval(pollerRef.current);
+  }
+
+  function markDone(id: string) {
+    clearTimers();
+    setProgress(100);
+    setDone(true);
+    localStorage.removeItem(STORAGE_KEY);
+    // Auto-navigate after a short pause so user sees 100%
+    setTimeout(() => router.push(`/dashboard/du-an/${id}`), 1200);
+  }
+
+  async function pollStatus(id: string) {
+    try {
+      const res = await fetch(`/api/projects/${id}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const project = data.project ?? data;
+      if (project?.status === "active" && project?.generated_content) {
+        markDone(id);
+      }
+    } catch { /* ignore */ }
+  }
+
+  function startTracking(id: string, from: number) {
+    clearTimers();
     let p = from;
     tickerRef.current = setInterval(() => {
       p = Math.min(p + Math.random() * 1.8, 90);
       setProgress(p);
     }, 1200);
+
+    pollerRef.current = setInterval(() => pollStatus(id), 4000);
+    // First check after 3 seconds
+    setTimeout(() => pollStatus(id), 3000);
   }
+
+  // Resume state if already generating (page reload while in progress)
+  useEffect(() => {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw) as { projectId: string };
+      setProjectId(saved.projectId);
+      setLoading(true);
+      setProgress(50);
+      startTracking(saved.projectId, 50);
+    } catch { /* ignore */ }
+    return clearTimers;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => () => clearTimers(), []);
 
   async function handleGenerate() {
     if (!selected || loading) return;
     setLoading(true);
     setProgress(5);
-    startProgressTicker(5);
 
     const projectName = `${brandName} — Website`;
 
@@ -62,7 +100,6 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
 
     const { projectId: newProjectId } = await res.json();
     setProjectId(newProjectId);
-    setProgress(15);
 
     // Save to localStorage — GenerationToast picks this up
     const genState = {
@@ -72,11 +109,10 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
       startedAt: Date.now(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(genState));
-
-    // Notify GenerationToast in the same tab
     window.dispatchEvent(new CustomEvent("sellos:gen-start", { detail: genState }));
 
-    startProgressTicker(15);
+    startTracking(newProjectId, 15);
+    setProgress(15);
   }
 
   const displayProgress = Math.round(progress);
@@ -183,17 +219,17 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
         </a>
 
         <div className="flex flex-col items-end gap-2">
-          {loading && (
+          {loading && !done && (
             <p className="text-xs text-slate-400">
               Tiến trình chạy nền — bạn có thể di chuyển sang trang khác
             </p>
           )}
 
-          {/* Progress bar under button */}
+          {/* Progress bar */}
           {loading && (
             <div className="w-64 h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-blue-500 rounded-full transition-all duration-1000"
+                className={`h-full rounded-full transition-all duration-1000 ${done ? "bg-emerald-500" : "bg-blue-500"}`}
                 style={{ width: `${displayProgress}%` }}
               />
             </div>
@@ -202,9 +238,20 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
           <button
             onClick={handleGenerate}
             disabled={!selected || loading}
-            className="flex items-center gap-2.5 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold rounded-xl transition-all shadow-sm hover:shadow-md min-w-[200px] justify-center"
+            className={`flex items-center gap-2.5 px-8 py-3 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold rounded-xl transition-all shadow-sm hover:shadow-md min-w-[220px] justify-center ${
+              done
+                ? "bg-emerald-600 hover:bg-emerald-700"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            {loading ? (
+            {done ? (
+              <>
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                Hoàn tất! Đang chuyển hướng...
+              </>
+            ) : loading ? (
               <>
                 <svg className="w-4 h-4 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -222,7 +269,7 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
             )}
           </button>
 
-          {loading && projectId && (
+          {loading && !done && projectId && (
             <a
               href={`/dashboard/du-an`}
               className="text-xs text-blue-600 hover:text-blue-700 underline underline-offset-2"
