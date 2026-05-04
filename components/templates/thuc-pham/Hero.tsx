@@ -10,9 +10,9 @@ const STATS = [
 ];
 
 const BADGES = [
-  "🌿 Không thuốc trừ sâu",
-  "🧪 Kiểm định độc lập",
-  "♻️ Bao bì tái chế",
+  { label: "Không thuốc trừ sâu" },
+  { label: "Kiểm định độc lập" },
+  { label: "Bao bì tái chế" },
 ];
 
 export default function FoodHero() {
@@ -48,8 +48,11 @@ export default function FoodHero() {
             {/* Trust badges */}
             <div className="flex flex-wrap gap-2">
               {BADGES.map((b) => (
-                <span key={b} className="text-xs font-medium bg-white border border-green-200 text-green-800 px-3 py-1.5 rounded-full shadow-sm">
-                  {b}
+                <span key={b.label} className="inline-flex items-center gap-1.5 text-xs font-medium bg-white border border-green-200 text-green-800 px-3 py-1.5 rounded-full shadow-sm">
+                  <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {b.label}
                 </span>
               ))}
             </div>

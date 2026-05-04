@@ -1,79 +1,139 @@
+import {
+	basePromptHeader,
+	composePrompt,
+	formatBiz,
+	formatProducts,
+	jsonOutputContract,
+	type BizInfo,
+	type ProductInfo,
+} from './_shared';
+import { newsletterSection } from './_sections';
+
+/**
+ * Shop Online template — fashion / consumer goods.
+ * Schema kept backward-compatible with ShopOnlineRenderer.
+ */
+
 export const shopOnlineSchema = {
-  seo: { title: "", description: "" },
-  hero: {
-    badge: "",
-    headline: "",
-    subheadline: "",
-    cta_primary: "",
-    cta_secondary: "",
-    trust1: "",
-    trust2: "",
-    trust3: "",
-    review_count: "",
-    review_score: "4.9",
-  },
-  categories: [
-    { name: "", slug: "", description: "", image_keyword: "" },
-    { name: "", slug: "", description: "", image_keyword: "" },
-    { name: "", slug: "", description: "", image_keyword: "" },
-    { name: "", slug: "", description: "", image_keyword: "" },
-  ],
-  sale: {
-    headline: "",
-    subtext: "",
-    code: "",
-    discount_text: "",
-    end_days: 3,
-    cta: "",
-  },
-  featured_section_title: "",
-  new_arrivals_section_title: "",
-  testimonials: [
-    { name: "", role: "", quote: "", rating: 5 },
-    { name: "", role: "", quote: "", rating: 5 },
-    { name: "", role: "", quote: "", rating: 5 },
-    { name: "", role: "", quote: "", rating: 5 },
-  ],
-  newsletter: { headline: "", subtext: "", button: "" },
-  footer: {
-    tagline: "",
-    address: "",
-    phone: "",
-    email: "",
-    return_policy: "",
-  },
+	seo: { title: '', description: '' },
+	hero: {
+		badge: '',
+		headline: '',
+		subheadline: '',
+		cta_primary: '',
+		cta_secondary: '',
+		trust1: '',
+		trust2: '',
+		trust3: '',
+		review_count: '',
+		review_score: '4.9',
+	},
+	categories: [
+		{ name: '', slug: '', description: '', image_keyword: '' },
+		{ name: '', slug: '', description: '', image_keyword: '' },
+		{ name: '', slug: '', description: '', image_keyword: '' },
+		{ name: '', slug: '', description: '', image_keyword: '' },
+	],
+	sale: {
+		headline: '',
+		subtext: '',
+		code: '',
+		discount_text: '',
+		end_days: 3,
+		cta: '',
+	},
+	featured_section_title: '',
+	new_arrivals_section_title: '',
+	testimonials: Array.from({ length: 4 }, () => ({
+		name: '',
+		role: '',
+		quote: '',
+		rating: 5,
+	})),
+	newsletter: newsletterSection.schema,
+	footer: {
+		tagline: '',
+		address: '',
+		phone: '',
+		email: '',
+		return_policy: '',
+	},
 };
 
 export type ShopOnlineContent = typeof shopOnlineSchema;
 
-export const shopOnlinePrompt = (bizInfo: {
-  brand_name: string;
-  description: string | null;
-  phone: string | null;
-  website: string | null;
-}, products: Array<{ name: string; description: string | null; price: number | null }>) => `
-Bạn là copywriter chuyên nghiệp về e-commerce và thời trang/hàng tiêu dùng Việt Nam.
-Hãy tạo nội dung hoàn chỉnh cho landing page shop online.
+/* ── Section instructions specific to shop-online ──────────── */
 
-THÔNG TIN SHOP:
-- Tên thương hiệu: ${bizInfo.brand_name}
-- Mô tả: ${bizInfo.description ?? "shop online chất lượng, giao hàng nhanh"}
-- Điện thoại: ${bizInfo.phone ?? ""}
-- Website: ${bizInfo.website ?? ""}
-
-SẢN PHẨM ĐANG BÁN:
-${products.map((p, i) => `${i + 1}. ${p.name}${p.price ? ` - ${p.price.toLocaleString("vi-VN")}đ` : ""}${p.description ? ` - ${p.description}` : ""}`).join("\n") || "Hàng thời trang, phụ kiện các loại"}
-
-YÊU CẦU:
-- Tone: trẻ trung, năng động, thời thượng
-- Hero badge ngắn gọn (vd: "✨ Bộ sưu tập Hè 2025")
-- Trust points: 3 điểm bán hàng ngắn gọn (vd: "Giao 2h nội thành")
-- 4 categories phù hợp với sản phẩm đang bán, slug không dấu gạch ngang
-  + image_keyword: từ khóa tiếng Anh để tìm ảnh Unsplash (vd: "fashion women", "accessories")
-- Sale code: dạng BRANDNAME + số (vd: NOVA30), realistic discount 15-40%
-- Testimonials: 4 khách hàng nữ điển hình, quote về chất lượng + giao hàng
-- Newsletter: offer hấp dẫn (giảm giá đơn đầu tiên)
-
-Trả về JSON hợp lệ theo schema sau, KHÔNG có markdown, KHÔNG có \`\`\`json:
-${JSON.stringify(shopOnlineSchema, null, 2)}
+const heroInstructions = `
+HERO:
+- badge: ngắn 3-6 từ, gắn nhãn bộ sưu tập / mùa / ưu đãi (vd: "Bộ sưu tập Hè 2025", "Mới ra mắt").
+- headline: 1 câu, dưới 12 từ, gợi cảm xúc / tự tin (vd: "Mặc đẹp mỗi ngày — không cần nghĩ nhiều").
+- subheadline: 1 câu nói rõ shop bán gì cho ai.
+- cta_primary: "Mua ngay", "Khám phá BST", "Săn sale".
+- cta_secondary: "Xem catalogue", "Tư vấn chọn size".
+- 3 trust points: mỗi cái dưới 6 từ, KHÁC LOẠI nhau (vd: "Giao 2h nội thành", "Đổi trả 14 ngày", "Freeship đơn 500k").
+- review_count: dạng "1.2k+", "5,000+" — thực tế.
+- review_score: giữ "4.9" (đừng đổi).
 `.trim();
+
+const categoriesInstructions = `
+CATEGORIES — 4 danh mục phù hợp với sản phẩm:
+- name: tên tiếng Việt ngắn (vd: "Áo nữ", "Phụ kiện", "Giày dép").
+- slug: chữ thường, không dấu, gạch ngang (vd: "ao-nu", "phu-kien").
+- description: 1 câu rất ngắn (4-8 từ).
+- image_keyword: 2-3 từ tiếng Anh để tìm ảnh Unsplash (vd: "women fashion", "leather accessories", "sneakers").
+- 4 categories phải PHẢN ÁNH sản phẩm thật của shop, không bịa danh mục không liên quan.
+`.trim();
+
+const saleInstructions = `
+SALE BANNER:
+- headline: ngắn, có % giảm hoặc số tiền tiết kiệm (vd: "Giảm 30% toàn bộ BST Hè").
+- subtext: 1 câu mở rộng, nhắc deadline.
+- code: dạng <BRAND_VIẾT_HOA><SỐ> (vd: "NOVA30", "HE25"). 6-8 ký tự.
+- discount_text: dưới 4 từ (vd: "Giảm 30%", "Mua 2 tặng 1").
+- end_days: 3 (giữ nguyên).
+- cta: "Săn sale ngay", "Dùng mã ngay".
+`.trim();
+
+const sectionTitlesInstructions = `
+SECTION TITLES:
+- featured_section_title: tiêu đề khu sản phẩm nổi bật (vd: "Hot nhất tuần này").
+- new_arrivals_section_title: tiêu đề khu hàng mới về (vd: "Vừa cập bến").
+`.trim();
+
+const testimonialsInstructions = `
+TESTIMONIALS — 4 đánh giá khách:
+- name: tên tiếng Việt, đa số khách shop online là nữ.
+- role: vd "Nhân viên văn phòng", "Sinh viên", "Mẹ 1 con". KHÔNG bịa nghề lạ.
+- quote: 1-2 câu cụ thể về một sản phẩm, một trải nghiệm shop (chất vải, fit dáng, giao hàng, đóng gói).
+- rating: 5.
+- 4 testimonials phải nói về 4 ĐIỂM KHÁC NHAU (chất lượng / giao hàng / đóng gói / đổi trả).
+`.trim();
+
+const footerInstructions = `
+FOOTER:
+- tagline: 1 câu định vị shop (5-10 từ).
+- address: địa chỉ giả thực tế ở TP.HCM hoặc Hà Nội.
+- phone: dạng "0xxx xxx xxx".
+- email: dạng "shop@<brand>.vn" hoặc "cskh@<brand>.vn".
+- return_policy: 1 câu chính sách đổi trả (vd: "Đổi trả miễn phí trong 14 ngày").
+`.trim();
+
+export const shopOnlinePrompt = (biz: BizInfo, products: ProductInfo[]) =>
+	composePrompt([
+		basePromptHeader({
+			persona: 'copywriter e-commerce thời trang & hàng tiêu dùng Việt Nam',
+			audience: 'khách mua hàng online, đa số nữ 22-40 tuổi, ưu tiên giá tốt + giao nhanh + ảnh đẹp',
+			tone: 'trẻ trung, năng động, gần gũi, nhẹ nhàng',
+		}),
+		`THÔNG TIN SHOP:\n${formatBiz(biz, 'shop online chất lượng, giao hàng nhanh')}`,
+		`SẢN PHẨM ĐANG BÁN:\n${formatProducts(products, 'Hàng thời trang, phụ kiện các loại')}`,
+		heroInstructions,
+		categoriesInstructions,
+		saleInstructions,
+		sectionTitlesInstructions,
+		testimonialsInstructions,
+		newsletterSection.instructions,
+		footerInstructions,
+		jsonOutputContract(shopOnlineSchema),
+	]);

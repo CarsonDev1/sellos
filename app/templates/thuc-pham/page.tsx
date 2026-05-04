@@ -1,6 +1,7 @@
 import FoodNavbar from "@/components/templates/thuc-pham/Navbar";
 import FoodHero from "@/components/templates/thuc-pham/Hero";
 import Benefits from "@/components/templates/thuc-pham/Benefits";
+import FarmToTable from "@/components/templates/thuc-pham/FarmToTable";
 import Products from "@/components/templates/thuc-pham/Products";
 import Story from "@/components/templates/thuc-pham/Story";
 import Testimonials from "@/components/templates/thuc-pham/Testimonials";
@@ -18,6 +19,7 @@ export default function ThucPhamPage() {
       <FoodNavbar />
       <FoodHero />
       <Benefits />
+      <FarmToTable />
       <Products />
       <Story />
       <Testimonials />
