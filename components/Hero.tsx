@@ -5,239 +5,279 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Highlight } from '@/components/ui/highlight';
+import {
+	ArrowRight,
+	Check,
+	Globe,
+	MessageCircle,
+	CreditCard,
+	Sparkles,
+} from 'lucide-react';
 
-const TEMPLATES = [
-	{ icon: '📚', name: 'Khóa học', color: 'bg-blue-100 text-blue-700' },
-	{ icon: '🛒', name: 'Shop online', color: 'bg-rose-100 text-rose-700' },
-	{ icon: '💼', name: 'Dịch vụ', color: 'bg-violet-100 text-violet-700' },
-	{ icon: '🎯', name: 'Coaching', color: 'bg-amber-100 text-amber-700' },
+const TYPED_LINES = [
+	'Bạn: Tôi bán khóa học luyện thi THPT, giá 499k',
+	'SellOS: Đang dựng trang web bán khóa học...',
+	'SellOS: Đã viết tiêu đề "Chinh phục điểm 10 — Luyện thi THPT cùng chuyên gia"',
+	'SellOS: Đang gắn nút "Đăng ký ngay" và form thanh toán...',
+	'SellOS: Trang web đã sẵn sàng tại link riêng của bạn ✓',
 ];
 
-const AI_RESPONSE =
-	'Tôi đang tạo landing page cho khóa học luyện thi THPT của bạn. Headline: "Chinh Phục Điểm 10 — Luyện Thi THPT Cùng Chuyên Gia"...';
-
 export default function Hero() {
+	const [lineIdx, setLineIdx] = useState(0);
 	const [typed, setTyped] = useState('');
-	const [started, setStarted] = useState(false);
 
 	useEffect(() => {
-		const t = setTimeout(() => setStarted(true), 1200);
+		if (lineIdx >= TYPED_LINES.length) return;
+		const target = TYPED_LINES[lineIdx];
+		if (typed.length < target.length) {
+			const t = setTimeout(() => setTyped(target.slice(0, typed.length + 1)), 22);
+			return () => clearTimeout(t);
+		}
+		const t = setTimeout(() => {
+			setLineIdx((i) => i + 1);
+			setTyped('');
+		}, 1100);
 		return () => clearTimeout(t);
-	}, []);
-
-	useEffect(() => {
-		if (!started) return;
-		if (typed.length >= AI_RESPONSE.length) return;
-		const t = setTimeout(() => setTyped(AI_RESPONSE.slice(0, typed.length + 1)), 28);
-		return () => clearTimeout(t);
-	}, [typed, started]);
+	}, [typed, lineIdx]);
 
 	return (
-		<section className='relative pt-24 pb-16 bg-white overflow-hidden'>
-			{/* Subtle grid bg */}
+		<section className='relative pt-28 pb-20 overflow-hidden bg-gradient-to-b from-slate-50 via-white to-white'>
+			{/* Soft radial glow */}
 			<div
-				className='absolute inset-0 pointer-events-none opacity-40'
+				aria-hidden
+				className='absolute inset-x-0 top-0 h-[600px] pointer-events-none'
+				style={{
+					background:
+						'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(59,130,246,0.08), transparent 70%)',
+				}}
+			/>
+			{/* Subtle grid */}
+			<div
+				aria-hidden
+				className='absolute inset-0 pointer-events-none opacity-[0.35]'
 				style={{
 					backgroundImage:
 						'linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px)',
-					backgroundSize: '40px 40px',
+					backgroundSize: '48px 48px',
+					maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 70%)',
+					WebkitMaskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 70%)',
 				}}
 			/>
 
 			<div className='relative container mx-auto px-4 max-w-7xl'>
-				<div className='grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16 items-center'>
+				<div className='grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-12 xl:gap-16 items-center'>
 					{/* Left: Copy */}
 					<motion.div
-						initial={{ opacity: 0, y: 24 }}
+						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, ease: 'easeOut' }}
-						className='space-y-6'
+						transition={{ duration: 0.6, ease: 'easeOut' }}
+						className='space-y-7'
 					>
-						{/* Badge */}
-						<div className='inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-1.5 text-sm text-blue-700 font-medium'>
-							<span className='text-blue-500'>✦</span>
-							Nền tảng AI bán hàng all-in-one
+						<div className='inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full pl-1.5 pr-4 py-1 text-sm text-slate-700 shadow-sm'>
+							<span className='inline-flex items-center gap-1 bg-blue-600 text-white text-[11px] font-semibold px-2 py-0.5 rounded-full'>
+								<Sparkles className='w-3 h-3' />
+								Mới
+							</span>
+							Tự tạo website bán hàng — không cần biết code
 						</div>
 
-						{/* Headline */}
 						<h1
-							className='font-heading text-3xl sm:text-4xl xl:text-5xl font-bold tracking-normal text-slate-900'
-							style={{ lineHeight: '1.4' }}
+							className='font-heading text-[2.1rem] sm:text-5xl xl:text-[3.4rem] font-bold text-slate-900 tracking-tight'
+							style={{ lineHeight: '1.15' }}
 						>
-							Hệ Thống Bán Hàng Chạy 24/7 — Xây Xong Trong <Highlight variant='blue'>7 Ngày</Highlight>,
-							Không Cần Dev
+							Có ngay một website{' '}
+							<Highlight variant='blue'>bán hàng tự động</Highlight>{' '}
+							<span className='text-slate-500 font-medium'>chỉ trong</span>{' '}
+							<span className='text-blue-600'>7 ngày.</span>
 						</h1>
 
-						{/* Subheadline */}
-						<p className='text-lg text-slate-600 leading-relaxed max-w-lg'>
-							<strong className='text-slate-800 font-semibold'>
-								Từ ý tưởng đến hệ thống bán hàng hoàn chỉnh — chỉ trong 7 ngày.
-							</strong>
-							<br />
-							Chọn template đẹp, chat với AI ngay trên SellOS — landing page, chatbot, thanh toán, admin
-							panel, email automation. Tất cả trong 1 nền tảng.
+						<p className='text-lg text-slate-600 leading-relaxed max-w-xl'>
+							Bạn cho biết{' '}
+							<span className='font-semibold text-slate-900'>bán gì, giá bao nhiêu, ai là khách</span>
+							. SellOS dựng cho bạn một website đẹp, kèm trợ lý trả lời khách 24/7
+							và trang quản lý đơn hàng — không cần thuê lập trình viên, không cần ghép tool.
 						</p>
 
-						{/* CTAs */}
-						<div className='flex flex-col sm:flex-row gap-3'>
+						{/* Outcome chips */}
+						<div className='flex flex-wrap gap-2'>
+							{[
+								{ icon: Globe, label: 'Website bán hàng riêng' },
+								{ icon: MessageCircle, label: 'Trợ lý chốt đơn 24/7' },
+								{ icon: CreditCard, label: 'Nhận thanh toán tự động' },
+							].map(({ icon: Icon, label }) => (
+								<span
+									key={label}
+									className='inline-flex items-center gap-1.5 bg-white border border-slate-200 rounded-full px-3 py-1.5 text-sm text-slate-700 shadow-sm'
+								>
+									<Icon className='w-3.5 h-3.5 text-blue-600' />
+									{label}
+								</span>
+							))}
+						</div>
+
+						<div className='flex flex-col sm:flex-row gap-3 pt-2'>
 							<Button
 								asChild
 								size='lg'
-								className='bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base px-8 h-12 shadow-md shadow-blue-200'
+								className='bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base px-7 h-12 shadow-lg shadow-blue-600/25'
 							>
-								<Link href='#pricing'>🚀 Bắt Đầu Miễn Phí</Link>
+								<Link href='#pricing' className='flex items-center gap-2'>
+									Bắt đầu miễn phí
+									<ArrowRight className='w-4 h-4' />
+								</Link>
 							</Button>
 							<Button
 								asChild
 								size='lg'
 								variant='outline'
-								className='border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 text-base px-8 h-12'
+								className='border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 text-base px-7 h-12'
 							>
-								<Link href='/templates/khoa-hoc'>▶ Xem Template Mẫu</Link>
+								<Link href='/templates/khoa-hoc'>Xem website mẫu</Link>
 							</Button>
 						</div>
 
-						{/* Social proof */}
-						<div className='flex flex-wrap items-center gap-3 pt-1 text-sm text-slate-500'>
+						<div className='flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500 pt-1'>
 							<span className='flex items-center gap-1.5'>
-								<span className='text-green-500 font-semibold'>✓</span>
-								200+ hệ thống đã ra mắt
+								<Check className='w-4 h-4 text-green-600' strokeWidth={3} />
+								Hơn 200 chủ shop đã dùng
 							</span>
-							<span className='text-slate-300'>·</span>
 							<span className='flex items-center gap-1.5'>
-								<span className='text-green-500 font-semibold'>✓</span>
-								Xây trong 7 ngày
-							</span>
-							<span className='text-slate-300'>·</span>
-							<span className='flex items-center gap-1.5'>
-								<span className='text-green-500 font-semibold'>✓</span>
-								Hoàn tiền 100%
+								<Check className='w-4 h-4 text-green-600' strokeWidth={3} />
+								Hoàn tiền nếu không dùng được
 							</span>
 						</div>
 					</motion.div>
 
-					{/* Right: Platform Mockup */}
+					{/* Right: live demo card */}
 					<motion.div
 						initial={{ opacity: 0, y: 24 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, ease: 'easeOut', delay: 0.2 }}
+						transition={{ duration: 0.6, ease: 'easeOut', delay: 0.15 }}
+						className='relative'
 					>
-						<div className='rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-200/80 overflow-hidden'>
-							{/* Browser chrome */}
-							<div className='flex items-center gap-2 px-4 py-3 bg-slate-100 border-b border-slate-200'>
-								<span className='w-3 h-3 rounded-full bg-red-400' />
-								<span className='w-3 h-3 rounded-full bg-yellow-400' />
-								<span className='w-3 h-3 rounded-full bg-green-400' />
-								<div className='flex-1 ml-2 bg-white rounded-md px-3 py-1 text-xs text-slate-400 font-mono border border-slate-200'>
-									app.sellos.vn/workspace
+						{/* Decorative glow behind card */}
+						<div
+							aria-hidden
+							className='absolute -inset-4 bg-gradient-to-br from-blue-200/40 via-indigo-200/30 to-transparent rounded-[2rem] blur-2xl'
+						/>
+
+						<div className='relative rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/40 overflow-hidden'>
+							{/* Window chrome */}
+							<div className='flex items-center gap-2 px-4 py-3 bg-slate-50 border-b border-slate-200'>
+								<span className='w-2.5 h-2.5 rounded-full bg-slate-300' />
+								<span className='w-2.5 h-2.5 rounded-full bg-slate-300' />
+								<span className='w-2.5 h-2.5 rounded-full bg-slate-300' />
+								<div className='flex-1 ml-3 bg-white rounded-md px-3 py-1 text-xs text-slate-400 font-mono border border-slate-200 truncate'>
+									sellos.vn/cua-ban
 								</div>
 							</div>
 
-							{/* 3-panel layout */}
-							<div className='grid grid-cols-[140px_1fr_1fr] h-[300px] sm:h-[340px]'>
-								{/* Panel 1: Templates */}
-								<div className='border-r border-slate-100 bg-slate-50 p-3 flex flex-col gap-1.5 overflow-hidden'>
-									<p className='text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1'>
-										Template
-									</p>
-									{TEMPLATES.map((t, i) => (
-										<div
-											key={i}
-											className={`flex items-center gap-2 px-2 py-2 rounded-lg cursor-pointer text-xs font-medium transition-all ${
-												i === 0
-													? 'bg-blue-600 text-white shadow-sm'
-													: 'hover:bg-white text-slate-600'
-											}`}
-										>
-											<span>{t.icon}</span>
-											<span className='truncate'>{t.name}</span>
+							{/* Body: chat + preview */}
+							<div className='grid grid-cols-1 sm:grid-cols-[1fr_1fr]'>
+								{/* Chat panel */}
+								<div className='border-b sm:border-b-0 sm:border-r border-slate-100 flex flex-col min-h-[340px]'>
+									<div className='px-4 py-3 border-b border-slate-100 flex items-center gap-2.5'>
+										<div className='w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center'>
+											<Sparkles className='w-3.5 h-3.5 text-white' />
 										</div>
-									))}
-								</div>
-
-								{/* Panel 2: Chat */}
-								<div className='border-r border-slate-100 flex flex-col'>
-									{/* Chat header */}
-									<div className='px-3 py-2 border-b border-slate-100 flex items-center gap-2'>
-										<div className='w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-[10px] font-bold'>
-											AI
+										<div className='flex flex-col leading-tight'>
+											<span className='text-xs font-semibold text-slate-800'>SellOS đang dựng web</span>
+											<span className='text-[10px] text-slate-400'>Bạn không cần làm gì thêm</span>
 										</div>
-										<span className='text-xs font-semibold text-slate-700'>SellOS AI</span>
-										<span className='ml-auto w-1.5 h-1.5 rounded-full bg-green-400' />
+										<span className='ml-auto inline-flex items-center gap-1 text-[10px] text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full'>
+											<span className='w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse' />
+											Đang chạy
+										</span>
 									</div>
 
-									{/* Messages */}
-									<div className='flex-1 p-3 space-y-2 overflow-hidden'>
-										{/* User message */}
-										<div className='flex justify-end'>
-											<div className='bg-blue-600 text-white text-xs px-3 py-2 rounded-2xl rounded-tr-sm max-w-[85%] leading-relaxed'>
-												Tôi bán khóa học luyện thi THPT, giá 499k, target học sinh lớp 12
-											</div>
-										</div>
-
-										{/* AI message */}
-										<div className='flex gap-2 items-end'>
-											<div className='w-5 h-5 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center text-[8px] font-bold text-slate-500'>
-												AI
-											</div>
-											<div className='bg-slate-100 text-slate-700 text-xs px-3 py-2 rounded-2xl rounded-tl-sm max-w-[85%] leading-relaxed'>
-												{typed || ' '}
-												{typed.length < AI_RESPONSE.length && started && (
-													<span className='inline-block w-0.5 h-3 bg-blue-500 ml-0.5 animate-pulse align-middle' />
-												)}
-											</div>
-										</div>
-									</div>
-
-									{/* Input */}
-									<div className='px-3 pb-3'>
-										<div className='flex items-center gap-2 bg-slate-100 rounded-xl px-3 py-2'>
-											<span className='text-xs text-slate-400 flex-1'>Nhắn tin với AI...</span>
-											<div className='w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center'>
-												<span className='text-white text-[10px]'>↑</span>
-											</div>
-										</div>
+									<div className='flex-1 p-4 space-y-2.5 overflow-hidden text-xs'>
+										{TYPED_LINES.slice(0, lineIdx).map((line, i) => (
+											<LineRow key={i} line={line} />
+										))}
+										{lineIdx < TYPED_LINES.length && (
+											<LineRow line={typed} typing />
+										)}
 									</div>
 								</div>
 
-								{/* Panel 3: Preview */}
-								<div className='bg-slate-50 p-3 flex flex-col gap-2 overflow-hidden'>
-									<p className='text-[10px] font-semibold text-slate-400 uppercase tracking-wider'>
-										Preview
-									</p>
-									{/* Mini landing page wireframe */}
-									<div className='bg-white rounded-lg border border-slate-200 p-2 flex-1 flex flex-col gap-1.5'>
-										{/* Navbar */}
-										<div className='h-2 bg-slate-100 rounded w-full' />
-										{/* Hero */}
-										<div className='bg-blue-50 rounded p-2 flex flex-col gap-1'>
-											<div className='h-2 bg-blue-200 rounded w-4/5' />
-											<div className='h-1.5 bg-blue-100 rounded w-3/5' />
-											<div className='h-4 bg-blue-600 rounded w-2/5 mt-1' />
+								{/* Preview panel */}
+								<div className='bg-slate-50 p-4 flex flex-col gap-3'>
+									<div className='flex items-center justify-between'>
+										<p className='text-[10px] font-semibold text-slate-500 uppercase tracking-wider'>
+											Xem trước
+										</p>
+										<span className='text-[10px] text-slate-400'>website.cua-ban.vn</span>
+									</div>
+									<div className='bg-white rounded-xl border border-slate-200 p-3 flex-1 flex flex-col gap-2 shadow-sm'>
+										<div className='flex items-center gap-1.5'>
+											<div className='w-3 h-3 rounded bg-blue-600' />
+											<div className='h-1.5 bg-slate-200 rounded w-12' />
+											<div className='ml-auto h-1.5 bg-slate-100 rounded w-8' />
 										</div>
-										{/* Features */}
-										<div className='grid grid-cols-3 gap-1'>
+										<div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 mt-1 space-y-1.5 border border-blue-100/50'>
+											<div className='h-2 bg-slate-300 rounded w-4/5' />
+											<div className='h-2 bg-slate-300 rounded w-3/5' />
+											<div className='h-1.5 bg-slate-200 rounded w-2/3 mt-1.5' />
+											<div className='h-5 bg-blue-600 rounded-md w-2/5 mt-2' />
+										</div>
+										<div className='grid grid-cols-3 gap-1.5 mt-1'>
 											{[1, 2, 3].map((i) => (
-												<div key={i} className='bg-slate-100 rounded p-1 flex flex-col gap-0.5'>
-													<div className='h-1.5 bg-slate-200 rounded' />
-													<div className='h-1 bg-slate-200 rounded w-3/4' />
+												<div key={i} className='bg-slate-50 border border-slate-100 rounded-md p-1.5 space-y-1'>
+													<div className='w-3 h-3 rounded bg-blue-100' />
+													<div className='h-1 bg-slate-200 rounded' />
+													<div className='h-1 bg-slate-100 rounded w-3/4' />
 												</div>
 											))}
 										</div>
-										{/* CTA */}
-										<div className='h-4 bg-blue-500 rounded w-3/5 mx-auto' />
-										{/* Generating badge */}
-										<div className='flex items-center gap-1 mt-auto'>
-											<span className='w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse' />
-											<span className='text-[8px] text-green-600 font-medium'>Đang tạo...</span>
+										<div className='mt-auto flex items-center gap-2 pt-2 border-t border-slate-100'>
+											<MessageCircle className='w-3 h-3 text-blue-600' />
+											<div className='h-1.5 bg-slate-200 rounded flex-1' />
+											<div className='w-5 h-5 rounded-full bg-blue-600' />
 										</div>
 									</div>
 								</div>
+							</div>
+						</div>
+
+						{/* Floating stat card */}
+						<div className='hidden sm:flex absolute -bottom-5 -left-5 items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-xl'>
+							<div className='w-10 h-10 rounded-full bg-green-50 border border-green-200 flex items-center justify-center'>
+								<Check className='w-5 h-5 text-green-600' strokeWidth={3} />
+							</div>
+							<div className='leading-tight'>
+								<p className='text-sm font-semibold text-slate-900'>3 đơn đầu tiên</p>
+								<p className='text-xs text-slate-500'>trong 24 giờ ra mắt</p>
 							</div>
 						</div>
 					</motion.div>
 				</div>
 			</div>
 		</section>
+	);
+}
+
+function LineRow({ line, typing }: { line: string; typing?: boolean }) {
+	const isUser = line.startsWith('Bạn:');
+	const text = line.replace(/^(Bạn:|SellOS:)\s*/, '');
+	return (
+		<div className={`flex gap-2 ${isUser ? 'justify-end' : ''}`}>
+			{!isUser && (
+				<div className='w-5 h-5 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex-shrink-0 flex items-center justify-center'>
+					<Sparkles className='w-2.5 h-2.5 text-white' />
+				</div>
+			)}
+			<div
+				className={`px-3 py-2 rounded-2xl max-w-[85%] leading-relaxed ${
+					isUser
+						? 'bg-blue-600 text-white rounded-tr-sm'
+						: 'bg-slate-100 text-slate-700 rounded-tl-sm'
+				}`}
+			>
+				{text || ' '}
+				{typing && (
+					<span className='inline-block w-0.5 h-3 bg-current ml-0.5 animate-pulse align-middle' />
+				)}
+			</div>
+		</div>
 	);
 }

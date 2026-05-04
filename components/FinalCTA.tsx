@@ -3,20 +3,30 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ArrowRight, Check } from 'lucide-react';
 
 export default function FinalCTA() {
 	return (
 		<section
 			id='final-cta'
-			className='py-28 px-4 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 relative overflow-hidden'
+			className='py-28 px-4 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-950 relative overflow-hidden'
 		>
-			{/* Subtle pattern */}
+			{/* Glow */}
 			<div
-				className='absolute inset-0 opacity-10 pointer-events-none'
+				aria-hidden
+				className='absolute inset-0 pointer-events-none'
+				style={{
+					background:
+						'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(59,130,246,0.25), transparent 70%)',
+				}}
+			/>
+			<div
+				aria-hidden
+				className='absolute inset-0 opacity-[0.04] pointer-events-none'
 				style={{
 					backgroundImage:
-						'radial-gradient(circle at 25% 25%, white 1px, transparent 1px), radial-gradient(circle at 75% 75%, white 1px, transparent 1px)',
-					backgroundSize: '40px 40px',
+						'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+					backgroundSize: '48px 48px',
 				}}
 			/>
 
@@ -26,46 +36,49 @@ export default function FinalCTA() {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.6 }}
-					className='space-y-6'
+					className='space-y-7'
 				>
-					{/* Headline */}
+					<span className='inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-xs font-semibold text-blue-200 uppercase tracking-wider'>
+						<span className='w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse' />
+						Còn 12 chỗ tháng này
+					</span>
+
 					<h2
 						className='font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white'
-						style={{ lineHeight: '1.55' }}
+						style={{ lineHeight: '1.2' }}
 					>
-						Bắt Đầu Hôm Nay — Hệ Thống Của Bạn Có Thể Chạy Trong{' '}
-						<span className='inline-block bg-white/20 border border-white/30 px-3 py-1 rounded-xl backdrop-blur-sm'>
-							7 Ngày Tới
+						Bắt đầu hôm nay —<br className='hidden sm:block' />
+						<span className='inline-block bg-gradient-to-r from-blue-300 to-indigo-300 bg-clip-text text-transparent'>
+							website của bạn có thể chạy trong tuần tới
 						</span>
 					</h2>
 
-					{/* Slot */}
-					<p className='text-blue-200 text-base'>
-						Còn <span className='text-white font-bold text-xl'>12</span> slot tháng này
+					<p className='text-blue-100/80 text-base sm:text-lg max-w-xl mx-auto leading-relaxed'>
+						Bạn không cần biết code. Không cần thuê dev. Không cần cài đặt phần mềm.
+						Chỉ cần thông tin về sản phẩm của mình.
 					</p>
 
-					{/* CTA */}
-					<div className='flex flex-col items-center gap-4'>
+					<div className='flex flex-col items-center gap-4 pt-2'>
 						<Button
 							asChild
 							size='lg'
-							className='bg-white hover:bg-blue-50 text-blue-700 font-bold text-lg px-12 h-14 shadow-xl shadow-blue-900/30'
+							className='bg-white hover:bg-blue-50 text-blue-700 font-bold text-lg px-10 h-14 shadow-2xl shadow-blue-900/50'
 						>
-							<Link href='#pricing'>🚀 Bắt Đầu Miễn Phí</Link>
+							<Link href='#pricing' className='flex items-center gap-2'>
+								Bắt đầu miễn phí
+								<ArrowRight className='w-5 h-5' />
+							</Link>
 						</Button>
-
-						<p className='text-blue-200 text-sm'>
-							<span className='text-white font-medium'>✓ Hoàn tiền 100%</span>
-							{' · '}
-							Không hỏi lý do
-						</p>
 					</div>
 
-					{/* Trust badges */}
-					<div className='flex flex-wrap items-center justify-center gap-6 pt-4'>
-						{['200+ hệ thống đã ra mắt', 'Xây trong 7 ngày', 'AI tích hợp sẵn'].map((badge, i) => (
-							<div key={i} className='flex items-center gap-2 text-blue-200 text-sm'>
-								<span className='text-white'>✓</span>
+					<div className='flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-3 text-sm text-blue-200/80'>
+						{[
+							'Hơn 200 chủ shop đã dùng',
+							'Có người kèm khi cần',
+							'Hoàn tiền nếu không dùng được',
+						].map((badge, i) => (
+							<div key={i} className='flex items-center gap-1.5'>
+								<Check className='w-4 h-4 text-green-400' strokeWidth={3} />
 								{badge}
 							</div>
 						))}

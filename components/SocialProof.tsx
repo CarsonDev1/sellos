@@ -118,14 +118,17 @@ export default function SocialProof() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-14 px-4"
+        className="text-center mb-14 px-4 max-w-2xl mx-auto"
       >
+        <span className="inline-block text-xs font-semibold text-blue-600 uppercase tracking-[0.15em] mb-3">
+          Khách hàng nói gì
+        </span>
         <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
-          Người Thật,{" "}
-          <Highlight variant="blue">Hệ Thống Thật</Highlight>
+          Người thật, đơn thật,{" "}
+          <Highlight variant="blue">tiền thật</Highlight>
         </h2>
         <p className="text-slate-500 text-base">
-          Kết quả từ những người đã tự xây hệ thống với SellOS.
+          Đây là những chủ shop, thầy cô, freelancer đã dùng SellOS để tự dựng hệ thống bán hàng.
         </p>
       </motion.div>
 

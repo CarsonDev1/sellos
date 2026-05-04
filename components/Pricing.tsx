@@ -12,21 +12,22 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SignUpButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
+import { Check } from "lucide-react";
 
 const KIT_FEATURES = [
-  "Truy cập AI chat tích hợp trên SellOS",
-  "Toàn bộ thư viện template",
-  "Prompt tự động điền thông tin",
-  "Video hướng dẫn từng bước",
-  "Checklist 7 ngày",
-  "Support qua group",
+  "Dùng AI dựng web ngay trên SellOS — không cần tài khoản ChatGPT",
+  "Toàn bộ thư viện mẫu website đẹp theo ngành",
+  "Tự động điền thông tin sản phẩm vào đúng chỗ",
+  "Video hướng dẫn từng bước, mỗi video dưới 10 phút",
+  "Danh sách việc cần làm 7 ngày — không bị lạc đường",
+  "Hỏi đáp qua group — có người trả lời trong ngày",
 ];
 
 const PRO_EXTRAS = [
-  "Mentor 1-1 trong 7 ngày",
-  "Review và feedback từng bước của bạn",
-  "Support ưu tiên, phản hồi trong 2 giờ",
-  "1 buổi review hệ thống sau khi ra mắt",
+  "Có người kèm 1-1 trong 7 ngày",
+  "Xem và góp ý cho từng bước bạn làm",
+  "Trả lời ưu tiên, trong vòng 2 giờ",
+  "1 buổi xem lại toàn hệ thống sau khi ra mắt",
 ];
 
 export default function Pricing() {
@@ -42,11 +43,14 @@ export default function Pricing() {
           transition={{ duration: 0.5 }}
           className="text-center mb-14"
         >
+          <span className="inline-block text-xs font-semibold text-blue-600 uppercase tracking-[0.15em] mb-3">
+            Chi phí
+          </span>
           <h2 className="font-heading text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
-            Chọn Gói Phù Hợp
+            Chọn cách phù hợp với bạn
           </h2>
           <p className="text-slate-500 text-base">
-            Cả 2 gói đều dùng chung nền tảng SellOS với AI tích hợp sẵn.
+            Cả 2 gói đều dùng chung SellOS với AI tích hợp sẵn — chỉ khác việc bạn tự làm hay có người kèm.
           </p>
         </motion.div>
 
@@ -63,7 +67,7 @@ export default function Pricing() {
                 <CardTitle className="font-heading text-slate-900 text-2xl">
                   SellOS Kit
                 </CardTitle>
-                <p className="text-slate-500 text-sm">Tự làm theo hướng dẫn</p>
+                <p className="text-slate-500 text-sm">Bạn tự làm theo hướng dẫn</p>
                 <div className="pt-3">
                   <span className="font-heading font-bold text-4xl text-slate-900">
                     [Liên hệ]
@@ -77,9 +81,7 @@ export default function Pricing() {
                       key={i}
                       className="flex items-center gap-2.5 text-sm text-slate-600"
                     >
-                      <span className="text-green-500 flex-shrink-0 font-semibold">
-                        ✓
-                      </span>
+                      <Check className="w-4 h-4 text-green-600 flex-shrink-0" strokeWidth={3} />
                       {f}
                     </li>
                   ))}
@@ -120,7 +122,7 @@ export default function Pricing() {
                 <CardTitle className="font-heading text-slate-900 text-2xl">
                   SellOS Pro
                 </CardTitle>
-                <p className="text-slate-500 text-sm">Có mentor 1-1 cùng bạn</p>
+                <p className="text-slate-500 text-sm">Có người kèm 1-1 trong 7 ngày</p>
                 <div className="pt-3">
                   <span className="font-heading font-bold text-4xl text-slate-900">
                     [Liên hệ]
@@ -129,7 +131,7 @@ export default function Pricing() {
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-xs text-slate-400 mb-3 uppercase tracking-wider font-semibold">
-                  Tất cả trong Kit, cộng thêm:
+                  Có tất cả của Kit, kèm thêm:
                 </p>
                 <ul className="space-y-3">
                   {KIT_FEATURES.map((f, i) => (
@@ -137,9 +139,7 @@ export default function Pricing() {
                       key={i}
                       className="flex items-center gap-2.5 text-sm text-slate-600"
                     >
-                      <span className="text-green-500 flex-shrink-0 font-semibold">
-                        ✓
-                      </span>
+                      <Check className="w-4 h-4 text-green-600 flex-shrink-0" strokeWidth={3} />
                       {f}
                     </li>
                   ))}
@@ -149,9 +149,7 @@ export default function Pricing() {
                       key={i}
                       className="flex items-center gap-2.5 text-sm text-blue-700 font-medium"
                     >
-                      <span className="text-blue-500 flex-shrink-0 font-semibold">
-                        ✓
-                      </span>
+                      <Check className="w-4 h-4 text-blue-600 flex-shrink-0" strokeWidth={3} />
                       {f}
                     </li>
                   ))}
@@ -182,9 +180,12 @@ export default function Pricing() {
           transition={{ delay: 0.4 }}
           className="text-center mt-8 text-slate-500 text-sm"
         >
-          <span className="text-green-500 font-semibold">✓</span> Hoàn tiền 100%
-          nếu sau 7 ngày bạn không có hệ thống chạy được —{" "}
-          <span className="text-slate-700">không hỏi lý do.</span>
+          <span className="inline-flex items-center gap-1.5 align-middle">
+            <Check className="w-4 h-4 text-green-600" strokeWidth={3} />
+            <span className="font-semibold text-slate-700">Hoàn tiền 100%</span>
+          </span>{" "}
+          nếu sau 7 ngày bạn vẫn chưa có hệ thống chạy được —{" "}
+          <span className="text-slate-700">không cần giải thích lý do.</span>
         </motion.p>
       </div>
     </section>

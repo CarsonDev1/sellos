@@ -1,11 +1,11 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import ValueFlow from "@/components/ValueFlow";
 import PainPoints from "@/components/PainPoints";
 import HowItWorks from "@/components/HowItWorks";
 import WhatYouGet from "@/components/WhatYouGet";
 import TemplatePlatform from "@/components/TemplatePlatform";
 import Roadmap from "@/components/Roadmap";
-import WhatsInPlatform from "@/components/WhatsInPlatform";
 import SocialProof from "@/components/SocialProof";
 import WhoItsFor from "@/components/WhoItsFor";
 import Pricing from "@/components/Pricing";
@@ -19,12 +19,12 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <Navbar />
       <Hero />
+      <ValueFlow />
       <PainPoints />
-      <HowItWorks />
       <WhatYouGet />
-      <TemplatePlatform />
+      <HowItWorks />
       <Roadmap />
-      <WhatsInPlatform />
+      <TemplatePlatform />
       <SocialProof />
       <WhoItsFor />
       <Pricing />
