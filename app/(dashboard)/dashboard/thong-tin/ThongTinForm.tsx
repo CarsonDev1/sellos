@@ -1,8 +1,24 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
+import {
+  Sparkles,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  AlertCircle,
+  X,
+  Plus,
+  Edit3,
+  Trash2,
+  Lightbulb,
+  Bot,
+  Loader2,
+} from "lucide-react";
 import { saveBusinessInfo, saveProducts } from "./actions";
 import type { Database } from "@/lib/supabase/types";
+import PageHeader from "@/components/dashboard/PageHeader";
 
 type BusinessInfo = Database["public"]["Tables"]["business_info"]["Row"];
 type Product = Database["public"]["Tables"]["products"]["Row"];
@@ -180,22 +196,24 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md">
-          <div className="w-20 h-20 bg-emerald-50 border-4 border-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+          <div className="relative w-24 h-24 mx-auto mb-6">
+            <div className="absolute inset-0 bg-emerald-100 rounded-full animate-ping opacity-40" />
+            <div className="relative w-full h-full bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center shadow-xl shadow-emerald-500/20">
+              <Check className="w-10 h-10 text-white" strokeWidth={3} />
+            </div>
           </div>
-          <h2 className="font-heading font-bold text-3xl text-slate-900 mb-3">Hoàn tất!</h2>
+          <h2 className="font-heading font-bold text-3xl text-slate-900 mb-3 tracking-tight">Hoàn tất!</h2>
           <p className="text-slate-500 leading-relaxed mb-8">
-            Thông tin đã được lưu. AI đã sẵn sàng tư vấn chiến lược bán hàng cá nhân hóa cho bạn.
+            Thông tin đã được lưu. AI đã sẵn sàng dựng web và tư vấn chiến lược bán hàng cá nhân hóa cho bạn.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="/dashboard/ai-chat" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3.5 rounded-2xl transition-colors shadow-lg shadow-blue-100">
-              Chat với AI ngay →
-            </a>
-            <a href="/dashboard" className="inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-8 py-3.5 rounded-2xl transition-colors">
+            <Link href="/dashboard/chon-template" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 h-12 rounded-xl transition-colors shadow-lg shadow-blue-600/20">
+              <Sparkles className="w-4 h-4" />
+              Tạo website ngay
+            </Link>
+            <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-7 h-12 rounded-xl transition-colors">
               Về Dashboard
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -204,38 +222,33 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
 
   return (
     <div>
-      {/* ── Header ── */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 text-sm text-slate-400 mb-3">
-          <a href="/dashboard" className="hover:text-slate-600 transition-colors">Dashboard</a>
-          <span>/</span>
-          <span className="text-slate-700 font-medium">Thông tin & Sản phẩm</span>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            <h1 className="font-heading font-bold text-2xl sm:text-3xl text-slate-900">
-              {step === "business" ? "Thông tin doanh nghiệp" : "Thông tin sản phẩm"}
-            </h1>
-            <p className="text-slate-400 mt-1 text-sm">
-              {step === "business" ? "Giúp AI hiểu rõ mô hình kinh doanh của bạn" : "Mô tả sản phẩm / dịch vụ bạn đang bán"}
-            </p>
-          </div>
-          {/* Steps */}
-          <div className="flex items-center gap-2 shrink-0">
+      <PageHeader
+        crumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Thông tin & Sản phẩm" },
+        ]}
+        title={step === "business" ? "Thông tin doanh nghiệp" : "Thông tin sản phẩm"}
+        description={
+          step === "business"
+            ? "Điền 1 lần — AI dùng những thông tin này để dựng web và tư vấn chiến lược cho bạn."
+            : "Mô tả sản phẩm / dịch vụ bạn đang bán. Càng cụ thể, AI viết content càng đúng."
+        }
+        actions={
+          <div className="flex items-center gap-2">
             <StepPill n={1} label="Doanh nghiệp" active={step === "business"} done={step === "product"} />
-            <div className={`w-8 h-0.5 rounded-full transition-colors ${step === "product" ? "bg-blue-400" : "bg-slate-200"}`} />
+            <div className={`w-6 h-0.5 rounded-full transition-colors ${step === "product" ? "bg-blue-500" : "bg-slate-200"}`} />
             <StepPill n={2} label="Sản phẩm" active={step === "product"} done={false} />
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-2xl px-5 py-4 text-sm flex items-center gap-3">
-          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          {error}
-          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-600">✕</button>
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-xl px-5 py-3.5 text-sm flex items-center gap-3">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span className="flex-1">{error}</span>
+          <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600" aria-label="Đóng">
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
@@ -262,10 +275,8 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
                       <img src={t.image} alt={t.label} className="absolute inset-0 w-full h-full object-cover" />
                       <div className={`absolute inset-0 transition-all ${sel ? "bg-blue-900/65" : "bg-slate-900/50"}`} />
                       {sel && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow">
-                          <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
+                        <div className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md">
+                          <Check className="w-3.5 h-3.5 text-blue-600" strokeWidth={3} />
                         </div>
                       )}
                       <div className="absolute bottom-0 left-0 right-0 p-2.5">
@@ -277,9 +288,7 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
                 })}
               </div>
               <div className="relative">
-                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
+                <Edit3 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   value={customType}
@@ -365,15 +374,25 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
             <button
               onClick={handleSaveBusiness}
               disabled={!business.brand_name || !business.business_type || saving}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-2xl transition-all shadow-md shadow-blue-100 hover:shadow-lg flex items-center justify-center gap-2"
+              className="w-full h-14 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 flex items-center justify-center gap-2"
             >
-              {saving ? <><Spinner />Đang lưu...</> : <>Tiếp theo: Thông tin sản phẩm <ArrowRight /></>}
+              {saving ? (
+                <>
+                  <Spinner />
+                  Đang lưu...
+                </>
+              ) : (
+                <>
+                  Tiếp theo: Thông tin sản phẩm
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
 
           {/* RIGHT: preview */}
           <div className="hidden lg:flex flex-col gap-4 sticky top-8">
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-5">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Xem trước</p>
               <div className="space-y-3">
                 {[
@@ -391,9 +410,14 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl border border-blue-100 p-5">
-              <p className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2"><span>💡</span> Mẹo điền form</p>
-              <ul className="space-y-2 text-xs text-blue-700 leading-relaxed">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-5">
+              <p className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                <span className="inline-flex w-7 h-7 rounded-lg bg-white shadow-sm items-center justify-center">
+                  <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                </span>
+                Mẹo điền form
+              </p>
+              <ul className="space-y-2 text-xs text-blue-700 leading-relaxed pl-1">
                 <li>→ Nhập tên + chọn loại hình, nhấn <strong>Tạo bằng AI</strong> để có mô tả chuyên nghiệp ngay</li>
                 <li>→ Mô tả càng chi tiết, AI tư vấn càng chính xác</li>
                 <li>→ Bạn có thể chỉnh sửa thông tin bất kỳ lúc nào</li>
@@ -413,7 +437,11 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
                 title={products.length > 1 ? `Sản phẩm ${index + 1}` : "Sản phẩm / Dịch vụ"}
                 subtitle="Thông tin cụ thể về những gì bạn đang bán"
                 action={products.length > 1 ? (
-                  <button onClick={() => setProducts((p) => p.filter((_, i) => i !== index))} className="text-xs text-red-400 hover:text-red-600 font-medium">
+                  <button
+                    onClick={() => setProducts((p) => p.filter((_, i) => i !== index))}
+                    className="inline-flex items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-2.5 py-1.5 rounded-lg font-semibold transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
                     Xóa
                   </button>
                 ) : undefined}
@@ -520,35 +548,41 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
               onClick={() => setProducts((p) => [...p, { name: "", description: "", price: undefined, usp: "", target_audience: "", sales_channels: [] }])}
               className="w-full py-3.5 border-2 border-dashed border-slate-200 text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/30 rounded-2xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+              <Plus className="w-4 h-4" />
               Thêm sản phẩm khác
             </button>
 
             <div className="flex gap-3">
               <button
                 onClick={() => { setStep("business"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                className="px-6 py-4 border border-slate-200 hover:border-slate-300 text-slate-600 font-semibold rounded-2xl hover:bg-slate-50 transition-all flex items-center gap-2 text-sm"
+                className="px-6 py-4 border border-slate-200 hover:border-slate-300 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2 text-sm"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-                </svg>
+                <ArrowLeft className="w-4 h-4" />
                 Quay lại
               </button>
               <button
                 onClick={handleSaveProducts}
                 disabled={products.every((p) => !p.name) || saving}
-                className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-2xl transition-all shadow-md shadow-blue-100 flex items-center justify-center gap-2"
+                className="flex-1 h-14 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/25 flex items-center justify-center gap-2"
               >
-                {saving ? <><Spinner />Đang lưu...</> : "Lưu & Hoàn tất"}
+                {saving ? (
+                  <>
+                    <Spinner />
+                    Đang lưu...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" strokeWidth={3} />
+                    Lưu & Hoàn tất
+                  </>
+                )}
               </button>
             </div>
           </div>
 
           {/* RIGHT: tips */}
           <div className="hidden lg:flex flex-col gap-4 sticky top-8">
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-5">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Thông tin đã lưu</p>
               <div className="space-y-2.5">
                 {[["Thương hiệu", business.brand_name], ["Loại hình", bizTypeLabel]].map(([l, v]) => (
@@ -559,12 +593,17 @@ export default function ThongTinForm({ initialBusiness, initialProducts }: Props
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-3xl border border-violet-100 p-5">
-              <p className="text-sm font-semibold text-violet-900 mb-3 flex items-center gap-2"><span>🤖</span> AI sẽ dùng để</p>
-              <ul className="space-y-2 text-xs text-violet-700 leading-relaxed">
-                <li>→ Viết content bán hàng phù hợp thương hiệu</li>
+            <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl border border-violet-100 p-5">
+              <p className="text-sm font-semibold text-violet-900 mb-3 flex items-center gap-2">
+                <span className="inline-flex w-7 h-7 rounded-lg bg-white shadow-sm items-center justify-center">
+                  <Bot className="w-3.5 h-3.5 text-violet-600" />
+                </span>
+                AI sẽ dùng để
+              </p>
+              <ul className="space-y-2 text-xs text-violet-700 leading-relaxed pl-1">
+                <li>→ Viết nội dung website phù hợp thương hiệu</li>
                 <li>→ Gợi ý chiến lược giá và khuyến mãi</li>
-                <li>→ Tạo kịch bản chatbot tự động</li>
+                <li>→ Tạo kịch bản trợ lý ảo tự động</li>
                 <li>→ Phân tích đối tượng khách hàng mục tiêu</li>
               </ul>
             </div>
@@ -581,14 +620,14 @@ function Section({ title, subtitle, required, action, children }: {
   title: string; subtitle?: string; required?: boolean; action?: React.ReactNode; children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 lg:p-7">
-      <div className="flex items-start justify-between mb-5">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-7">
+      <div className="flex items-start justify-between mb-5 gap-4">
         <div>
-          <h2 className="font-semibold text-slate-900 text-base flex items-center gap-1.5">
+          <h2 className="font-heading font-bold text-slate-900 text-base flex items-center gap-1.5">
             {title}
-            {required && <span className="text-red-400 text-xs">*</span>}
+            {required && <span className="text-rose-500 text-xs">*</span>}
           </h2>
-          {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+          {subtitle && <p className="text-xs text-slate-500 mt-1">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -610,44 +649,31 @@ function Field({ label, required, children }: { label: string; required?: boolea
 
 function StepPill({ n, label, active, done }: { n: number; label: string; active: boolean; done: boolean }) {
   return (
-    <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-      active ? "bg-blue-600 text-white shadow-md shadow-blue-100"
-        : done ? "bg-emerald-100 text-emerald-700"
-        : "bg-slate-100 text-slate-400"
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+      active
+        ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+        : done
+          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+          : "bg-slate-100 text-slate-500"
     }`}>
-      {done ? (
-        <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-        </svg>
-      ) : (
-        <span className="text-xs w-3.5 text-center">{n}</span>
-      )}
+      <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] ${
+        active
+          ? "bg-white/20"
+          : done
+            ? "bg-emerald-500 text-white"
+            : "bg-white text-slate-400"
+      }`}>
+        {done ? <Check className="w-3 h-3" strokeWidth={3} /> : n}
+      </span>
       {label}
     </div>
   );
 }
 
 function Spinner() {
-  return (
-    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-    </svg>
-  );
+  return <Loader2 className="w-3.5 h-3.5 animate-spin" />;
 }
 
 function Sparkle() {
-  return (
-    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l1.5 4.5L11 9l-4.5 1.5L5 15l-1.5-4.5L-1 9l4.5-1.5L5 3zM19 9l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z" />
-    </svg>
-  );
-}
-
-function ArrowRight() {
-  return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-    </svg>
-  );
+  return <Sparkles className="w-3.5 h-3.5" />;
 }

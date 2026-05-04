@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { Check, Sparkles, ArrowLeft, Loader2, ExternalLink } from "lucide-react";
 import { TEMPLATES } from "@/lib/templates";
+import PageHeader from "@/components/dashboard/PageHeader";
 
 interface Props {
   brandName: string;
@@ -82,93 +85,114 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
   const displayProgress = Math.round(progress);
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
-      {/* Header */}
-      <div className="mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-          Bước 2 / 3
-        </div>
-        <h1 className="text-2xl font-heading font-bold text-slate-900 mb-2">Chọn giao diện cho website</h1>
-        <p className="text-slate-500 text-sm">
-          AI sẽ tạo nội dung cá nhân hóa cho <span className="font-semibold text-slate-700">{brandName}</span> dựa trên template bạn chọn.
-        </p>
-      </div>
+    <div>
+      <PageHeader
+        crumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Tạo website mới" },
+        ]}
+        title="Chọn mẫu cho website của bạn"
+        description={
+          <>
+            AI sẽ dựng nội dung cá nhân hoá cho{" "}
+            <strong className="text-slate-900">{brandName}</strong> dựa trên mẫu bạn chọn.
+          </>
+        }
+        actions={
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+            Bước 2 / 3
+          </span>
+        }
+      />
+
 
       {/* Template grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
         {TEMPLATES.map((tpl) => {
           const isSelected = selected === tpl.id;
+          const isMatch =
+            (tpl.id === businessType) ||
+            (tpl.id === "shop-online" && businessType === "shop-online") ||
+            (tpl.id === "coaching" && (businessType === "coaching" || businessType === "khoa-hoc" || businessType === "dich-vu")) ||
+            (tpl.id === "thuc-pham" && businessType === "thuc-pham");
           return (
             <button
               key={tpl.id}
               onClick={() => !loading && setSelected(tpl.id)}
-              className={`relative text-left rounded-2xl border-2 overflow-hidden transition-all ${
+              className={`group relative text-left rounded-2xl border-2 overflow-hidden transition-all bg-white ${
                 isSelected
-                  ? "border-blue-500 shadow-lg shadow-blue-100 scale-[1.02]"
-                  : "border-slate-200 hover:border-slate-300 hover:shadow-md"
-              } ${loading ? "pointer-events-none opacity-80" : ""}`}
+                  ? "border-blue-500 shadow-xl shadow-blue-200/40 ring-2 ring-blue-500/10"
+                  : "border-slate-200 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5"
+              } ${loading ? "pointer-events-none opacity-60" : ""}`}
             >
-              {/* Preview thumbnail */}
-              <div className={`h-40 bg-gradient-to-br ${tpl.color} relative`}>
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6">
-                  <div className="w-full bg-white/20 backdrop-blur-sm rounded-xl p-3 space-y-2">
-                    <div className="h-2 bg-white/60 rounded-full w-3/4" />
-                    <div className="h-1.5 bg-white/40 rounded-full w-full" />
-                    <div className="h-1.5 bg-white/40 rounded-full w-5/6" />
-                    <div className="flex gap-2 mt-2">
-                      <div className="h-6 w-20 bg-white/80 rounded-lg" />
-                      <div className="h-6 w-16 bg-white/30 rounded-lg" />
-                    </div>
-                  </div>
-                  <div className="flex gap-2 w-full">
-                    <div className="flex-1 h-12 bg-white/20 rounded-xl" />
-                    <div className="flex-1 h-12 bg-white/20 rounded-xl" />
-                    <div className="flex-1 h-12 bg-white/20 rounded-xl" />
-                  </div>
-                </div>
+              {/* Preview thumbnail with iframe */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                <iframe
+                  src={tpl.previewUrl}
+                  title={`${tpl.name} preview`}
+                  className="absolute top-0 left-0 border-0 pointer-events-none"
+                  style={{
+                    width: "1280px",
+                    height: "720px",
+                    transform: "scale(0.34)",
+                    transformOrigin: "top left",
+                  }}
+                  scrolling="no"
+                  loading="lazy"
+                  tabIndex={-1}
+                />
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors" />
 
+                {/* Selected check */}
                 {isSelected && (
-                  <div className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm">
-                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                  <div className="absolute top-3 right-3 w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center shadow-md">
+                    <Check className="w-4 h-4 text-white" strokeWidth={3} />
                   </div>
                 )}
 
+                {/* Match badge */}
+                {isMatch && !isSelected && (
+                  <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    Phù hợp với bạn
+                  </span>
+                )}
+
+                {/* Demo link */}
                 <a
                   href={tpl.previewUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute bottom-3 right-3 text-[10px] font-semibold text-white/80 hover:text-white bg-black/20 hover:bg-black/30 px-2.5 py-1 rounded-full transition-colors"
+                  className="absolute bottom-3 right-3 inline-flex items-center gap-1 text-[11px] font-semibold text-white bg-slate-900/80 hover:bg-slate-900 backdrop-blur-sm px-2.5 py-1.5 rounded-full transition-colors"
                 >
-                  Xem demo →
+                  <ExternalLink className="w-3 h-3" />
+                  Xem demo
                 </a>
               </div>
 
               {/* Info */}
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-2 mb-1.5">
-                  <h3 className="font-heading font-bold text-slate-900 text-sm">{tpl.name}</h3>
-                  {businessType && (
-                    (tpl.id === "shop-online" && businessType === "shop-online") ||
-                    (tpl.id === "coaching" && (businessType === "coaching" || businessType === "khoa-hoc" || businessType === "dich-vu")) ||
-                    (tpl.id === "thuc-pham" && businessType === "thuc-pham")
-                  ) ? (
-                    <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full whitespace-nowrap">
-                      Phù hợp
-                    </span>
-                  ) : null}
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="font-heading font-bold text-slate-900 text-base">{tpl.name}</h3>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">{tpl.description}</p>
+                <p className="text-sm text-slate-500 leading-relaxed mb-3 line-clamp-2">
+                  {tpl.description}
+                </p>
 
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {tpl.adminSections.filter(s => s.key !== "settings" && s.key !== "content").map((s) => (
-                    <span key={s.key} className="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                      {s.label}
-                    </span>
-                  ))}
+                <div className="flex flex-wrap gap-1.5">
+                  {tpl.adminSections
+                    .filter((s) => s.key !== "settings" && s.key !== "content")
+                    .map((s) => (
+                      <span
+                        key={s.key}
+                        className="text-[10px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full"
+                      >
+                        {s.label}
+                      </span>
+                    ))}
                 </div>
               </div>
             </button>
@@ -176,62 +200,63 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
         })}
       </div>
 
-      {/* CTA */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <a href="/dashboard/thong-tin" className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
-          ← Quay lại chỉnh thông tin
-        </a>
+      {/* CTA bar */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky bottom-4 shadow-xl shadow-slate-900/5">
+        <Link
+          href="/dashboard/thong-tin"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900 font-medium"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Quay lại chỉnh thông tin
+        </Link>
 
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           {loading && (
-            <p className="text-xs text-slate-400">
-              Tiến trình chạy nền — bạn có thể di chuyển sang trang khác
-            </p>
-          )}
-
-          {/* Progress bar under button */}
-          {loading && (
-            <div className="w-64 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-500 rounded-full transition-all duration-1000"
-                style={{ width: `${displayProgress}%` }}
-              />
+            <div className="flex flex-col gap-1.5 min-w-[200px]">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-500">Đang tạo website...</span>
+                <span className="font-bold text-blue-600 tabular-nums">{displayProgress}%</span>
+              </div>
+              <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-700"
+                  style={{ width: `${displayProgress}%` }}
+                />
+              </div>
             </div>
           )}
 
           <button
             onClick={handleGenerate}
             disabled={!selected || loading}
-            className="flex items-center gap-2.5 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-semibold rounded-xl transition-all shadow-sm hover:shadow-md min-w-[200px] justify-center"
+            className="inline-flex items-center justify-center gap-2 px-7 h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-lg min-w-[200px]"
           >
             {loading ? (
               <>
-                <svg className="w-4 h-4 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                {displayProgress > 0 ? `Đang tạo... ${displayProgress}%` : "Đang khởi tạo..."}
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {displayProgress > 0 ? `Đang tạo...` : "Đang khởi tạo..."}
               </>
             ) : (
               <>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <Sparkles className="w-4 h-4" />
                 Tạo website với AI
               </>
             )}
           </button>
-
-          {loading && projectId && (
-            <a
-              href={`/dashboard/du-an`}
-              className="text-xs text-blue-600 hover:text-blue-700 underline underline-offset-2"
-            >
-              Đến trang dự án →
-            </a>
-          )}
         </div>
       </div>
+
+      {loading && projectId && (
+        <p className="text-center text-sm text-slate-500 mt-4">
+          Tiến trình chạy nền — bạn có thể{" "}
+          <Link
+            href="/dashboard/du-an"
+            className="text-blue-600 hover:text-blue-700 font-semibold"
+          >
+            đến trang dự án →
+          </Link>
+        </p>
+      )}
     </div>
   );
 }
