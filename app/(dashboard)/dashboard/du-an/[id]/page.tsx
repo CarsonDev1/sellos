@@ -27,7 +27,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   }
 
   // Strip generated_content — it's large and not needed in the admin overview
-  const { generated_content: _gc, ...projectSafe } = project as typeof project & { generated_content?: unknown };
+  const projectSafe = { ...project, generated_content: null };
 
-  return <ProjectOverviewClient project={projectSafe as typeof project} tpl={tpl ?? null} stats={stats} />;
+  return <ProjectOverviewClient project={projectSafe} tpl={tpl ?? null} stats={stats} />;
 }
