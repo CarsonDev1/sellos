@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Check, Sparkles, ArrowLeft, Loader2, ExternalLink } from "lucide-react";
 import { TEMPLATES } from "@/lib/templates";
 import PageHeader from "@/components/dashboard/PageHeader";
@@ -14,6 +15,7 @@ interface Props {
 const STORAGE_KEY = "sellos_generating";
 
 export default function TemplatePickerClient({ brandName, businessType }: Props) {
+  const router = useRouter();
   const [selected, setSelected] = useState<string | null>(() => {
     const map: Record<string, string> = {
       "shop-online": "shop-online",
@@ -26,34 +28,67 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const tickerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Resume state if already generating
-  useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    try {
-      const saved = JSON.parse(raw) as { projectId: string; templateId: string; projectName: string };
-      setProjectId(saved.projectId);
-      setLoading(true);
-      setProgress(50);
-    } catch { /* ignore */ }
-  }, []);
-
-  function startProgressTicker(from: number) {
+  function clearTimers() {
     if (tickerRef.current) clearInterval(tickerRef.current);
+    if (pollerRef.current) clearInterval(pollerRef.current);
+  }
+
+  function markDone(id: string) {
+    clearTimers();
+    setProgress(100);
+    setDone(true);
+    localStorage.removeItem(STORAGE_KEY);
+    setTimeout(() => router.push(`/dashboard/du-an/${id}`), 1200);
+  }
+
+  async function pollStatus(id: string) {
+    try {
+      const res = await fetch(`/api/projects/${id}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const project = data.project ?? data;
+      if (project?.status === "active" && project?.generated_content) {
+        markDone(id);
+      }
+    } catch { /* ignore */ }
+  }
+
+  function startTracking(id: string, from: number) {
+    clearTimers();
     let p = from;
     tickerRef.current = setInterval(() => {
       p = Math.min(p + Math.random() * 1.8, 90);
       setProgress(p);
     }, 1200);
+    pollerRef.current = setInterval(() => pollStatus(id), 4000);
+    setTimeout(() => pollStatus(id), 3000);
   }
+
+  // Resume state if already generating (page reload while in progress)
+  useEffect(() => {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw) as { projectId: string };
+      setProjectId(saved.projectId);
+      setLoading(true);
+      setProgress(50);
+      startTracking(saved.projectId, 50);
+    } catch { /* ignore */ }
+    return clearTimers;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => () => clearTimers(), []);
 
   async function handleGenerate() {
     if (!selected || loading) return;
     setLoading(true);
     setProgress(5);
-    startProgressTicker(5);
 
     const projectName = `${brandName} — Website`;
 
@@ -67,7 +102,6 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
     setProjectId(newProjectId);
     setProgress(15);
 
-    // Save to localStorage — GenerationToast picks this up
     const genState = {
       projectId: newProjectId,
       templateId: selected,
@@ -75,11 +109,9 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
       startedAt: Date.now(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(genState));
-
-    // Notify GenerationToast in the same tab
     window.dispatchEvent(new CustomEvent("sellos:gen-start", { detail: genState }));
 
-    startProgressTicker(15);
+    startTracking(newProjectId, 15);
   }
 
   const displayProgress = Math.round(progress);
@@ -214,12 +246,20 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
           {loading && (
             <div className="flex flex-col gap-1.5 min-w-[200px]">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-500">Đang tạo website...</span>
-                <span className="font-bold text-blue-600 tabular-nums">{displayProgress}%</span>
+                <span className={done ? "text-emerald-600 font-semibold" : "text-slate-500"}>
+                  {done ? "Hoàn tất!" : "Đang tạo website..."}
+                </span>
+                <span className={`font-bold tabular-nums ${done ? "text-emerald-600" : "text-blue-600"}`}>
+                  {displayProgress}%
+                </span>
               </div>
               <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-700"
+                  className={`h-full rounded-full transition-all duration-700 ${
+                    done
+                      ? "bg-emerald-500"
+                      : "bg-gradient-to-r from-blue-500 to-indigo-600"
+                  }`}
                   style={{ width: `${displayProgress}%` }}
                 />
               </div>
@@ -229,9 +269,18 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
           <button
             onClick={handleGenerate}
             disabled={!selected || loading}
-            className="inline-flex items-center justify-center gap-2 px-7 h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-lg min-w-[200px]"
+            className={`inline-flex items-center justify-center gap-2 px-7 h-12 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg min-w-[200px] ${
+              done
+                ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
+                : "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20"
+            }`}
           >
-            {loading ? (
+            {done ? (
+              <>
+                <Check className="w-4 h-4" />
+                Đang chuyển hướng...
+              </>
+            ) : loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
                 {displayProgress > 0 ? `Đang tạo...` : "Đang khởi tạo..."}
@@ -246,7 +295,7 @@ export default function TemplatePickerClient({ brandName, businessType }: Props)
         </div>
       </div>
 
-      {loading && projectId && (
+      {loading && !done && projectId && (
         <p className="text-center text-sm text-slate-500 mt-4">
           Tiến trình chạy nền — bạn có thể{" "}
           <Link

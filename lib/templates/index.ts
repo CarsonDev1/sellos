@@ -136,6 +136,8 @@ export function getTemplate(id: string): TemplateConfig | undefined {
 	return TEMPLATES.find((t) => t.id === id);
 }
 
+export { normalizeContent } from './_normalize';
+
 export type {
 	ThucPhamContent,
 	CoachingContent,

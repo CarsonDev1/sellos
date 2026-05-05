@@ -5,6 +5,7 @@ import type { Project, ProjectProduct } from "@/lib/supabase/projects";
 import ThucPhamRenderer from "@/components/generated/thuc-pham/ThucPhamRenderer";
 import CoachingRenderer from "@/components/generated/coaching/CoachingRenderer";
 import ShopOnlineRenderer from "@/components/generated/shop-online/ShopOnlineRenderer";
+import { getTemplate, normalizeContent } from "@/lib/templates";
 import type { ThucPhamContent } from "@/lib/templates/thuc-pham";
 import type { CoachingContent } from "@/lib/templates/coaching";
 import type { ShopOnlineContent } from "@/lib/templates/shop-online";
@@ -17,8 +18,15 @@ interface Props {
 
 export default function SiteRenderer({ project, products, brandName }: Props) {
   const { addItem, openCart, itemCount } = useCart();
-  const content = project.generated_content!;
   const id = project.id;
+  const tpl = getTemplate(project.template_id ?? "");
+  const rawContent = project.generated_content ?? {};
+
+  // Fill in any fields the AI omitted with schema defaults so the renderer
+  // never accesses `undefined.foo`.
+  const content = tpl
+    ? normalizeContent(rawContent, tpl.schema)
+    : rawContent;
 
   switch (project.template_id) {
     case "thuc-pham":
@@ -55,6 +63,10 @@ export default function SiteRenderer({ project, products, brandName }: Props) {
         />
       );
     default:
-      return <div className="flex items-center justify-center min-h-screen text-slate-500">Template không hợp lệ</div>;
+      return (
+        <div className="flex items-center justify-center min-h-screen text-slate-500">
+          Template chưa hỗ trợ render công khai
+        </div>
+      );
   }
 }

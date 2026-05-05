@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Project } from "@/lib/supabase/projects";
-import type { TemplateConfig } from "@/lib/templates";
+import type { AdminSection } from "@/lib/templates";
 
 interface Stats {
   type: "shop" | "coaching";
@@ -19,9 +19,20 @@ interface Stats {
   confirmedBookings?: number;
 }
 
+// Serializable subset of TemplateConfig (without functions like buildPrompt)
+interface TemplateClientInfo {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  textColor: string;
+  previewUrl: string;
+  adminSections: AdminSection[];
+}
+
 interface Props {
   project: Project;
-  tpl: TemplateConfig | null;
+  tpl: TemplateClientInfo | null;
   stats: Stats | null;
 }
 
